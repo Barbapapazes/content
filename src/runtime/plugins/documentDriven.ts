@@ -302,7 +302,7 @@ export default defineNuxtPlugin((nuxt) => {
   }
 
   // @ts-ignore - Refresh on client-side
-  nuxt.hook('app:data:refresh', async () => process.client && await refresh(useRoute(), true))
+  nuxt.hook('app:data:refresh', async () => process.client && await refresh(useRoute().to, true))
 })
 
 function prefetchBodyComponents (nodes: MarkdownNode[]) {
