@@ -43,13 +43,6 @@ export type MountOptions = {
 }
 
 export interface ModuleOptions {
-  /**
-   * Base route that will be used for content api
-   *
-   * @default '_content'
-   * @deprecated Use `api.base` instead
-   */
-  base: string
   api: {
     /**
      * Base route that will be used for content api
@@ -317,8 +310,6 @@ export default defineNuxtModule<ModuleOptions>({
     }
   },
   defaults: {
-    // @deprecated
-    base: '',
     api: {
       baseURL: '/api/_content'
     },
