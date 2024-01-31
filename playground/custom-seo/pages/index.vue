@@ -5,9 +5,9 @@ useServerHead({
     {
       hid: 'description',
       name: 'description',
-      content: 'My custom description'
-    }
-  ]
+      content: 'My custom description',
+    },
+  ],
 })
 </script>
 

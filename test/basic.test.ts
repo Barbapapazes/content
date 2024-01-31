@@ -1,10 +1,11 @@
-import { fileURLToPath } from 'url'
-import { test, describe, expect } from 'vitest'
-import { setup, $fetch } from '@nuxt/test-utils'
+import { fileURLToPath } from 'node:url'
+import { describe, expect, it } from 'vitest'
+import { $fetch, setup } from '@nuxt/test-utils'
 import { testMarkdownParser } from './features/parser-markdown'
 import { testPathMetaTransformer } from './features/transformer-path-meta'
 import { testYamlParser } from './features/parser-yaml'
 import { testNavigation } from './features/navigation'
+
 // import { testMDCComponent } from './features/mdc-component'
 import { testJSONParser } from './features/parser-json'
 import { testCSVParser } from './features/parser-csv'
@@ -22,34 +23,34 @@ import { testIgnores } from './features/ignores'
 
 // const spyConsoleWarn = vi.spyOn(global.console, 'warn')
 
-describe('Basic usage', async () => {
+describe('basic usage', async () => {
   await setup({
     rootDir: fileURLToPath(new URL('./fixtures/basic', import.meta.url)),
-    server: true
+    server: true,
   })
 
-  test('Multi part path', async () => {
+  it('multi part path', async () => {
     const html = await $fetch('/features/multi-part-path')
     expect(html).contains('Persian')
   })
 
-  test('Japanese path', async () => {
-    const html = await $fetch('/' + encodeURIComponent('こんにちは'))
+  it('japanese path', async () => {
+    const html = await $fetch(`/${encodeURIComponent('こんにちは')}`)
     expect(html).contains('🎨 こんにちは')
   })
 
-  test('Partials specials chars', async () => {
+  it('partials specials chars', async () => {
     const html = await $fetch('/_partial/content-(v2)')
     expect(html).contains('Content (v2)')
   })
 
-  test('Partials specials chars', async () => {
+  it('partials specials chars', async () => {
     const html = await $fetch('/_partial/markdown')
     expect(html).contains('><!--[--> Default title <!--]--></h1>')
     expect(html).contains('<p><!--[-->p1<!--]--></p>')
   })
 
-  test('Fetch only title and excerpt', async () => {
+  it('fetch only title and excerpt', async () => {
     const html = await $fetch('/excerpt-only')
     expect(html).contains('Excerpt paragraph')
     expect(html).not.contains('Rest of the content')

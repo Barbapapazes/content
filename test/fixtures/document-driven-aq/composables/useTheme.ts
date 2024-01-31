@@ -1,6 +1,6 @@
-import { useContent, computed } from '#imports'
+import { computed, useContent } from '#imports'
 
-export const useTheme = () => {
+export function useTheme() {
   const { globals } = useContent()
 
   const theme = computed(() => globals.value?.theme)

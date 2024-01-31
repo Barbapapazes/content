@@ -8,7 +8,7 @@ export default defineComponent({
      */
     use: {
       type: Function,
-      default: undefined
+      default: undefined,
     },
     /**
      * Tags to unwrap separated by spaces
@@ -16,11 +16,11 @@ export default defineComponent({
      */
     unwrap: {
       type: [Boolean, String],
-      default: false
-    }
+      default: false,
+    },
   },
-  render (props: any) {
+  render(props: any) {
     return h(resolveComponent('MDCSlot'), props)
-  }
+  },
 })
 </script>

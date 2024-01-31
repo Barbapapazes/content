@@ -1,4 +1,4 @@
-import { describe, test, expect, assert } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { $fetch } from '@nuxt/test-utils'
 
 const json = `{
@@ -6,7 +6,7 @@ const json = `{
 }`
 const jsonArray = JSON.stringify([
   'item 1',
-  'item 2'
+  'item 2',
 ])
 const json5 = `{
   key: 'value',
@@ -22,15 +22,15 @@ No \\n's!",
   "backwardsCompatible": "with JSON",
 }`
 
-export const testJSONParser = () => {
+export function testJSONParser() {
   describe('Parser (json)', () => {
     test('key:value', async () => {
       const parsed = await $fetch('/api/parse', {
         method: 'POST',
         body: {
           id: 'content:index.json',
-          content: json
-        }
+          content: json,
+        },
       })
 
       expect(parsed).toHaveProperty('_id')
@@ -43,8 +43,8 @@ export const testJSONParser = () => {
         method: 'POST',
         body: {
           id: 'content:index.json',
-          content: jsonArray
-        }
+          content: jsonArray,
+        },
       })
 
       expect(parsed).toHaveProperty('_id')
@@ -69,8 +69,8 @@ export const testJSONParser = () => {
         method: 'POST',
         body: {
           id: 'content:index.json5',
-          content: json5
-        }
+          content: json5,
+        },
       })
 
       expect(parsed).toHaveProperty('_id')
@@ -79,7 +79,7 @@ export const testJSONParser = () => {
 
       expect(parsed.leadingDecimalPoint).toEqual(0.8675309)
       expect(parsed.andTrailing).toEqual(8675309)
-      expect(parsed.lineBreaks).toEqual("Look, Mom! No \n's!")
+      expect(parsed.lineBreaks).toEqual('Look, Mom! No \n\'s!')
     })
   })
 }

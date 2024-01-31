@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { NavItem } from '../../../src/runtime/types'
+import { NavItem } from '../../../src/runtime/types'
 
 const props = defineProps<{
   navItem: NavItem
 }>()
 const icon = computed(() => {
-  if (props.navItem.icon) { return props.navItem.icon }
-  if (props.navItem.children && props.navItem.children.length) { return '📁' }
+  if (props.navItem.icon)
+    return props.navItem.icon
+  if (props.navItem.children && props.navItem.children.length)
+    return '📁'
   return '📄'
 })
 </script>

@@ -1,19 +1,18 @@
 import { pascalCase } from 'scule'
 import slugify from 'slugify'
-import { withoutTrailingSlash, withLeadingSlash } from 'ufo'
+import { withLeadingSlash, withoutTrailingSlash } from 'ufo'
 import type { ParsedContent } from '../types'
 import { defineTransformer } from './utils'
 
 const SEMVER_REGEX = /^(\d+)(\.\d+)*(\.x)?$/
 
-export const describeId = (id: string) => {
+export function describeId(id: string) {
   const [_source, ...parts] = id.split(':')
 
   const [, filename, _extension] = parts[parts.length - 1]?.match(/(.*)\.([^.]+)$/) || []
 
-  if (filename) {
+  if (filename)
     parts[parts.length - 1] = filename
-  }
 
   const _path = (parts || []).join('/')
 
@@ -21,14 +20,14 @@ export const describeId = (id: string) => {
     _source,
     _path,
     _extension,
-    _file: _extension ? `${_path}.${_extension}` : _path
+    _file: _extension ? `${_path}.${_extension}` : _path,
   }
 }
 
 export default defineTransformer({
   name: 'path-meta',
   extensions: ['.*'],
-  transform (content, options: any = {}) {
+  transform(content, options: any = {}) {
     const { locales = [], defaultLocale = 'en', respectPathCase = false } = options
     const { _source, _file, _path, _extension } = describeId(content._id)
     const parts = _path.split('/')
@@ -47,9 +46,9 @@ export default defineTransformer({
       title: content.title || generateTitle(refineUrlPart(parts[parts.length - 1])),
       _source,
       _file,
-      _extension
+      _extension,
     }
-  }
+  },
 })
 
 /**
@@ -68,7 +67,7 @@ const isPartial = (path: string): boolean => path.split(/[:/]/).some(part => par
  * @param path file full path
  * @returns generated slug
  */
-export const generatePath = (path: string, { forceLeadingSlash = true, respectPathCase = false } = {}): string => {
+export function generatePath(path: string, { forceLeadingSlash = true, respectPathCase = false } = {}): string {
   path = path.split('/').map(part => slugify(refineUrlPart(part), { lower: !respectPathCase })).join('/')
   return forceLeadingSlash ? withLeadingSlash(withoutTrailingSlash(path)) : path
 }
@@ -81,12 +80,11 @@ export const generateTitle = (path: string) => path.split(/[\s-]/g).map(pascalCa
 /**
  * Clean up special keywords from path part
  */
-export function refineUrlPart (name: string): string {
+export function refineUrlPart(name: string): string {
   name = name.split(/[/:]/).pop()!
   // Match 1, 1.2, 1.x, 1.2.x, 1.2.3.x,
-  if (SEMVER_REGEX.test(name)) {
+  if (SEMVER_REGEX.test(name))
     return name
-  }
 
   return (
     name

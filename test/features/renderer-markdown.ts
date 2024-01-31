@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { $fetch } from '@nuxt/test-utils'
 
 const content = `---
@@ -35,13 +35,13 @@ This is an alert for {{ type }}
 
 `
 
-export const testMarkdownRenderer = () => {
+export function testMarkdownRenderer() {
   describe('renderer:markdown', () => {
     test('bindings', async () => {
       const rendered = await $fetch('/parse', {
         params: {
-          content: encodeURIComponent(content)
-        }
+          content: encodeURIComponent(content),
+        },
       })
 
       expect(rendered).toContain('<img src="https://nuxtjs.org/design-kit/colored-logo.svg" alt>')

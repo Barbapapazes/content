@@ -4,12 +4,12 @@ const description = 'Play online with our interactive Nuxt Content playground.'
 useSeoMeta({
   title: `${title} - Nuxt Content`,
   ogTitle: 'Nuxt Content Playground',
-  description
+  description,
 })
 defineOgImage({
   component: 'Docs',
   title,
-  description
+  description,
 })
 </script>
 

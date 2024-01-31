@@ -13,29 +13,28 @@ const TRANSFORMERS = [
   markdown,
   json,
   yaml,
-  pathMeta
+  pathMeta,
 ]
 
-function getParser (ext: string, additionalTransformers: ContentTransformer[] = []): ContentTransformer | undefined {
+function getParser(ext: string, additionalTransformers: ContentTransformer[] = []): ContentTransformer | undefined {
   let parser = additionalTransformers.find(p => ext.match(new RegExp(p.extensions.join('|'), 'i')) && p.parse)
-  if (!parser) {
+  if (!parser)
     parser = TRANSFORMERS.find(p => ext.match(new RegExp(p.extensions.join('|'), 'i')) && p.parse)
-  }
 
   return parser
 }
 
-function getTransformers (ext: string, additionalTransformers: ContentTransformer[] = []) {
+function getTransformers(ext: string, additionalTransformers: ContentTransformer[] = []) {
   return [
     ...additionalTransformers.filter(p => ext.match(new RegExp(p.extensions.join('|'), 'i')) && p.transform),
-    ...TRANSFORMERS.filter(p => ext.match(new RegExp(p.extensions.join('|'), 'i')) && p.transform)
+    ...TRANSFORMERS.filter(p => ext.match(new RegExp(p.extensions.join('|'), 'i')) && p.transform),
   ]
 }
 
 /**
  * Parse content file using registered plugins
  */
-export async function transformContent (id: string, content: StorageValue, options: TransformContentOptions = {}) {
+export async function transformContent(id: string, content: StorageValue, options: TransformContentOptions = {}) {
   const { transformers = [] } = options
   // Call hook before parsing the file
   const file = { _id: id, body: content }
@@ -43,7 +42,6 @@ export async function transformContent (id: string, content: StorageValue, optio
   const ext = extname(id)
   const parser = getParser(ext, transformers)
   if (!parser) {
-    // eslint-disable-next-line no-console
     console.warn(`${ext} files are not supported, "${id}" falling back to raw content`)
     return file
   }
@@ -58,9 +56,8 @@ export async function transformContent (id: string, content: StorageValue, optio
     const transformOptions = options[camelCase(cur.name)]
 
     // disable transformer if options is false
-    if (transformOptions === false) {
+    if (transformOptions === false)
       return next
-    }
 
     return cur.transform!(next, transformOptions || {})
   }, Promise.resolve(parsed))

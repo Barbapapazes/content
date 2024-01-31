@@ -1,5 +1,6 @@
-import type { ContentQueryFindResponse, ContentQueryFindOneResponse, ContentQueryCountResponse, ContentQueryWithSurround, ContentQueryWithDirConfig, ContentQueryResponse } from './api'
+import type { ContentQueryCountResponse, ContentQueryFindOneResponse, ContentQueryFindResponse, ContentQueryResponse, ContentQueryWithDirConfig, ContentQueryWithSurround } from './api'
 import type { ParsedContentInternalMeta, ParsedContentMeta } from '.'
+
 /**
  * Query
  */
@@ -57,7 +58,7 @@ export interface ContentQueryBuilderWhere extends Partial<Record<keyof ParsedCon
       ]
     })
     ```
-   **/
+   */
   $and?: ContentQueryBuilderWhere[]
   /**
    * Match if any of nested conditions is true
@@ -71,7 +72,7 @@ export interface ContentQueryBuilderWhere extends Partial<Record<keyof ParsedCon
       ]
     })
     ```
-   **/
+   */
   $or?: ContentQueryBuilderWhere[]
   /**
    * Match is condition is false
@@ -84,7 +85,7 @@ export interface ContentQueryBuilderWhere extends Partial<Record<keyof ParsedCon
       }
     })
     ```
-   **/
+   */
   $not?: string | number | boolean | RegExp | ContentQueryBuilderWhere
   /**
    * Match if item equals condition
@@ -97,7 +98,7 @@ export interface ContentQueryBuilderWhere extends Partial<Record<keyof ParsedCon
       }
     })
     ```
-   **/
+   */
   $eq?: string | number | boolean | RegExp
   /**
    * Match if item not equals condition
@@ -110,7 +111,7 @@ export interface ContentQueryBuilderWhere extends Partial<Record<keyof ParsedCon
       }
     })
     ```
-   **/
+   */
   $ne?: string | number | boolean | RegExp
   /**
    * Check if item is greater than condition
@@ -214,7 +215,7 @@ export interface ContentQueryBuilderWhere extends Partial<Record<keyof ParsedCon
       }
     })
     ```
-   **/
+   */
   $contains?: Array<string | number | boolean> | string | number | boolean
   /**
    * Match if item contains at least one rule from condition array
@@ -240,7 +241,7 @@ export interface ContentQueryBuilderWhere extends Partial<Record<keyof ParsedCon
       }
     })
     ```
-   **/
+   */
   $icontains?: string
   /**
    * Match if item is in condition array
@@ -253,7 +254,7 @@ export interface ContentQueryBuilderWhere extends Partial<Record<keyof ParsedCon
       }
     })
     ```
-   **/
+   */
   $in?: Array<string | number | boolean>
 
   [key: string]: string | number | boolean | RegExp | ContentQueryBuilderWhere | Array<string | number | boolean | ContentQueryBuilderWhere> | undefined
@@ -338,7 +339,7 @@ export interface ContentQueryBuilder<T = ParsedContentMeta, Y = {}> {
   /**
    * Fetch sorround contents
    */
-  withSurround(query: string | ContentQueryBuilderWhere, options?: Partial<{ before: number; after: number }>): ContentQueryBuilder<T, ContentQueryWithSurround<T>>
+  withSurround(query: string | ContentQueryBuilderWhere, options?: Partial<{ before: number, after: number }>): ContentQueryBuilder<T, ContentQueryWithSurround<T>>
 
   /**
    * Fetch sorround contents

@@ -1,3 +1,12 @@
+<script setup lang="ts">
+import { definePageMeta } from '#imports'
+
+definePageMeta({
+  layout: 'default',
+  layoutTransition: false,
+})
+</script>
+
 <template>
   <div class="content-page">
     <ContentDoc>
@@ -17,15 +26,6 @@
     </ContentDoc>
   </div>
 </template>
-
-<script setup lang="ts">
-import { definePageMeta } from '#imports'
-
-definePageMeta({
-  layout: 'default',
-  layoutTransition: false
-})
-</script>
 
 <style>
 .content-page {

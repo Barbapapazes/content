@@ -1,11 +1,11 @@
 // @ts-nocheck
 // TODO: fix types
 import { unified } from 'unified'
-import { ParsedContent } from '../../types'
+import type { ParsedContent } from '../../types'
 import { defineTransformer } from '../utils'
 import { fromCSV } from './from-csv'
 
-function csvParse (options) {
+function csvParse(options) {
   const parser = (doc) => {
     return fromCSV(doc, options)
   }
@@ -33,9 +33,9 @@ function csvParse (options) {
   }
 
   const compiler = (doc) => {
-    if (options.json) {
+    if (options.json)
       return toJsonObject(doc)
-    }
+
     return toJsonArray(doc)
   }
 
@@ -49,14 +49,14 @@ export default defineTransformer({
     const stream = unified().use(csvParse, {
       delimiter: ',',
       json: true,
-      ...options
+      ...options,
     })
     const { result } = await stream.process(content)
 
     return <ParsedContent> {
       _id,
       _type: 'csv',
-      body: result
+      body: result,
     }
-  }
+  },
 })

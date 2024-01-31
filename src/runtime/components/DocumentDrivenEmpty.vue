@@ -11,14 +11,14 @@ export default defineComponent({
   props: {
     value: {
       type: Object as PropType<ParsedContent>,
-      required: true
-    }
+      required: true,
+    },
   },
-  render ({ value }: any) {
+  render({ value }: any) {
     return h('div', undefined, [
       h('p', 'Document is empty'),
-      h('p', `Add content to it by opening ${value._source}/${value._file} file.`)
+      h('p', `Add content to it by opening ${value._source}/${value._file} file.`),
     ])
-  }
+  },
 })
 </script>

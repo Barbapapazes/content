@@ -1,4 +1,4 @@
-import { describe, test, expect, assert } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { $fetch } from '@nuxt/test-utils'
 import csvToJson from 'csvtojson'
 
@@ -62,7 +62,7 @@ Stephen,Tyler,"7452 Terrace ""At the Plaza"" road",SomeTown,SD, 91234
 
 `.trim().split('\n---\n')
 
-export const testCSVParser = () => {
+export function testCSVParser() {
   describe('Parser (.csv)', () => {
     for (const csv of csvs) {
       test(`${csv.replace(/\n/g, '-')}`, async () => {
@@ -70,8 +70,8 @@ export const testCSVParser = () => {
           method: 'POST',
           body: {
             id: 'content:index.csv',
-            content: csv
-          }
+            content: csv,
+          },
         })
 
         expect(parsed).toHaveProperty('_id')

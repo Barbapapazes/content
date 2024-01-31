@@ -1,18 +1,19 @@
-import { promises as fsp } from 'fs'
-import { execSync } from 'child_process'
+import { promises as fsp } from 'node:fs'
+import { execSync } from 'node:child_process'
 import { resolve } from 'pathe'
 import { globby } from 'globby'
 
 // Temporary forked from nuxt/framework
 
-async function loadPackage (dir: string) {
+async function loadPackage(dir: string) {
   const pkgPath = resolve(dir, 'package.json')
   const data = JSON.parse(await fsp.readFile(pkgPath, 'utf-8').catch(() => '{}'))
-  const save = () => fsp.writeFile(pkgPath, JSON.stringify(data, null, 2) + '\n')
+  const save = () => fsp.writeFile(pkgPath, `${JSON.stringify(data, null, 2)}\n`)
 
   const updateDeps = (reviver: Function) => {
     for (const type of ['dependencies', 'devDependencies', 'optionalDependencies', 'peerDependencies']) {
-      if (!data[type]) { continue }
+      if (!data[type])
+        continue
       for (const e of Object.entries(data[type])) {
         const dep = { name: e[0], range: e[1], type }
         delete data[type][dep.name]
@@ -27,14 +28,14 @@ async function loadPackage (dir: string) {
     dir,
     data,
     save,
-    updateDeps
+    updateDeps,
   }
 }
 
 type ThenArg<T> = T extends PromiseLike<infer U> ? U : T
 type Package = ThenArg<ReturnType<typeof loadPackage>>
 
-async function loadWorkspace (dir: string) {
+async function loadWorkspace(dir: string) {
   const workspacePkg = await loadPackage(dir)
   const pkgDirs = await globby(workspacePkg.data.workspaces || [], { onlyDirectories: true })
 
@@ -42,15 +43,16 @@ async function loadWorkspace (dir: string) {
 
   for (const pkgDir of pkgDirs) {
     const pkg = await loadPackage(pkgDir)
-    if (!pkg.data.name) { continue }
+    if (!pkg.data.name)
+      continue
     packages.push(pkg)
   }
 
   const find = (name: string) => {
     const pkg = packages.find(pkg => pkg.data.name === name)
-    if (!pkg) {
-      throw new Error('Workspace package not found: ' + name)
-    }
+    if (!pkg)
+      throw new Error(`Workspace package not found: ${name}`)
+
     return pkg
   }
 
@@ -58,9 +60,8 @@ async function loadWorkspace (dir: string) {
     find(from).data.name = to
     for (const pkg of packages) {
       pkg.updateDeps((dep: any) => {
-        if (dep.name === from && !dep.range.startsWith('npm:')) {
-          dep.range = 'npm:' + to + '@' + dep.range
-        }
+        if (dep.name === from && !dep.range.startsWith('npm:'))
+          dep.range = `npm:${to}@${dep.range}`
       })
     }
   }
@@ -69,9 +70,8 @@ async function loadWorkspace (dir: string) {
     find(name).data.version = newVersion
     for (const pkg of packages) {
       pkg.updateDeps((dep: any) => {
-        if (dep.name === name) {
+        if (dep.name === name)
           dep.range = newVersion
-        }
       })
     }
   }
@@ -85,11 +85,11 @@ async function loadWorkspace (dir: string) {
     save,
     find,
     rename,
-    setVersion
+    setVersion,
   }
 }
 
-async function main () {
+async function main() {
   const workspace = await loadWorkspace(process.cwd())
 
   const commit = execSync('git rev-parse --short HEAD').toString('utf-8').trim()
@@ -97,14 +97,13 @@ async function main () {
 
   for (const pkg of workspace.packages.filter(p => !p.data.private)) {
     workspace.setVersion(pkg.data.name, `${pkg.data.version}-${date}.${commit}`)
-    workspace.rename(pkg.data.name, pkg.data.name + '-edge')
+    workspace.rename(pkg.data.name, `${pkg.data.name}-edge`)
   }
 
   await workspace.save()
 }
 
 main().catch((err) => {
-  // eslint-disable-next-line no-console
   console.error(err)
   process.exit(1)
 })

@@ -124,7 +124,7 @@ export interface ParsedContent extends ParsedContentMeta {
 }
 
 export interface MarkdownParsedContent extends ParsedContent {
-  _type: 'markdown',
+  _type: 'markdown'
   /**
    * Content is empty
    */
@@ -214,7 +214,7 @@ export interface QueryBuilderWhere extends Partial<Record<keyof ParsedContentInt
       ]
     })
     ```
-   **/
+   */
   $and?: QueryBuilderWhere[]
   /**
    * Match if any of nested conditions is true
@@ -228,7 +228,7 @@ export interface QueryBuilderWhere extends Partial<Record<keyof ParsedContentInt
       ]
     })
     ```
-   **/
+   */
   $or?: QueryBuilderWhere[]
   /**
    * Match is condition is false
@@ -241,7 +241,7 @@ export interface QueryBuilderWhere extends Partial<Record<keyof ParsedContentInt
       }
     })
     ```
-   **/
+   */
   $not?: string | number | boolean | RegExp | QueryBuilderWhere
   /**
    * Match if item equals condition
@@ -254,7 +254,7 @@ export interface QueryBuilderWhere extends Partial<Record<keyof ParsedContentInt
       }
     })
     ```
-   **/
+   */
   $eq?: string | number | boolean | RegExp
   /**
    * Match if item not equals condition
@@ -267,7 +267,7 @@ export interface QueryBuilderWhere extends Partial<Record<keyof ParsedContentInt
       }
     })
     ```
-   **/
+   */
   $ne?: string | number | boolean | RegExp
   /**
    * Check if item is greater than condition
@@ -371,7 +371,7 @@ export interface QueryBuilderWhere extends Partial<Record<keyof ParsedContentInt
       }
     })
     ```
-   **/
+   */
   $contains?: Array<string | number | boolean> | string | number | boolean
   /**
    * Match if item contains at least one rule from condition array
@@ -397,7 +397,7 @@ export interface QueryBuilderWhere extends Partial<Record<keyof ParsedContentInt
       }
     })
     ```
-   **/
+   */
   $icontains?: string
   /**
    * Match if item is in condition array
@@ -410,7 +410,7 @@ export interface QueryBuilderWhere extends Partial<Record<keyof ParsedContentInt
       }
     })
     ```
-   **/
+   */
   $in?: string | Array<string | number | boolean>
 
   [key: string]: undefined | string | number | boolean | RegExp | QueryBuilderWhere | Array<string | number | boolean | QueryBuilderWhere>
@@ -479,7 +479,7 @@ export interface QueryBuilder<T = ParsedContentMeta> {
   /**
    * Fetch sorround contents
    */
-  findSurround(query: string | QueryBuilderWhere, options?: Partial<{ before: number; after: number }>): Promise<Array<T>>
+  findSurround(query: string | QueryBuilderWhere, options?: Partial<{ before: number, after: number }>): Promise<Array<T>>
 
   /**
    * Count matched contents

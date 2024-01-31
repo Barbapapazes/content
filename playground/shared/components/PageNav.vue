@@ -12,7 +12,7 @@ watch(
     if (!navEl.value || !navEl.value.attributes.open) { return }
 
     (navEl.value as HTMLElement).attributes.removeNamedItem('open')
-  }
+  },
 )
 </script>
 

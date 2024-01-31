@@ -1,49 +1,49 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { apply, get, omit, pick, sortList } from '../../../src/runtime/query/match/utils'
 
-describe('Query utils', () => {
-  test('Omit', () => {
+describe('query utils', () => {
+  it('omit', () => {
     const obj = {
       a: 1,
       b: 2,
       c: 3,
-      d: 4
+      d: 4,
     }
 
     const result = omit(['a', 'b'])(obj)
 
     expect(result).toEqual({
       c: 3,
-      d: 4
+      d: 4,
     })
   })
 
-  test('Pick', () => {
+  it('pick', () => {
     const obj = {
       a: 1,
       b: 2,
       c: 3,
-      d: 4
+      d: 4,
     }
 
     const result = pick(['a', 'b'])(obj)
 
     expect(result).toEqual({
       a: 1,
-      b: 2
+      b: 2,
     })
   })
 
-  test('Get nested field', () => {
+  it('get nested field', () => {
     const obj = {
       a: {
         b: {
           c: 1,
-          d: 2
+          d: 2,
         },
         e: [3, 4],
-        f: [[5, 6], { g: 7, h: 8 }]
-      }
+        f: [[5, 6], { g: 7, h: 8 }],
+      },
     }
     expect(get(obj, 'a.b.c')).toEqual(1)
     expect(get(obj, 'a.b.d')).toEqual(2)
@@ -55,45 +55,45 @@ describe('Query utils', () => {
     expect(get(obj, 'a.f.1.g')).toEqual(7)
   })
 
-  test('Apply', () => {
+  it('apply', () => {
     const arr = [1, 2, 3]
 
     expect(apply(item => item + 1)(arr)).toEqual([2, 3, 4])
   })
 
-  test('Sort by key', () => {
+  it('sort by key', () => {
     const data = [
       { a: 1, b: 2 },
       { a: 2, b: 1 },
-      { a: 1, b: 1 }
+      { a: 1, b: 1 },
     ]
 
     expect(sortList(data, { a: 1 })).toEqual([
       { a: 1, b: 2 },
       { a: 1, b: 1 },
-      { a: 2, b: 1 }
+      { a: 2, b: 1 },
     ])
 
     expect(sortList(data, { a: -1 })).toEqual([
       { a: 2, b: 1 },
       { a: 1, b: 2 },
-      { a: 1, b: 1 }
+      { a: 1, b: 1 },
     ])
 
     expect(sortList(data, { b: 1 })).toEqual([
       { a: 2, b: 1 },
       { a: 1, b: 1 },
-      { a: 1, b: 2 }
+      { a: 1, b: 2 },
     ])
 
     expect(sortList(data, { b: -1 })).toEqual([
       { a: 1, b: 2 },
       { a: 2, b: 1 },
-      { a: 1, b: 1 }
+      { a: 1, b: 1 },
     ])
   })
 
-  test('Sort by key multi-phase', () => {
+  it('sort by key multi-phase', () => {
     const data = [{ data: { a: 1, b: 2 } }, { data: { a: 2, b: 1 } }, { data: { a: 1, b: 1 } }]
 
     // sort by a descending
@@ -101,14 +101,14 @@ describe('Query utils', () => {
     expect(sortList(aDesc, { 'data.b': -1 })).toEqual([
       { data: { a: 1, b: 2 } },
       { data: { a: 2, b: 1 } },
-      { data: { a: 1, b: 1 } }
+      { data: { a: 1, b: 1 } },
     ])
 
     // Sort again by b asc.
     expect(sortList(aDesc, { 'data.b': 1 })).toEqual([
       { data: { a: 2, b: 1 } },
       { data: { a: 1, b: 1 } },
-      { data: { a: 1, b: 2 } }
+      { data: { a: 1, b: 2 } },
     ])
 
     // Sort again by a desc.

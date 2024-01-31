@@ -2,10 +2,10 @@ export default defineNuxtConfig({
   extends: ['../shared'],
 
   content: {
-    contentHead: false
+    contentHead: false,
   },
 
   typescript: {
-    includeWorkspace: true
-  }
+    includeWorkspace: true,
+  },
 })

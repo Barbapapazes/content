@@ -1,14 +1,13 @@
-import { describe, expect, test, assert } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { $fetch, useTestContext } from '@nuxt/test-utils'
 
-export const testLocales = () => {
-  // @ts-ignore
+export function testLocales() {
+  // @ts-expect-error
   const apiBaseUrl = useTestContext().options.nuxtConfig.content?.api?.baseURL || '/api/_content'
   const resolveResult = (result: any) => {
     if (!useTestContext().options.nuxtConfig.content?.experimental?.advanceQuery) {
-      if (result?.surround) {
+      if (result?.surround)
         return result.surround
-      }
 
       return result?._id || Array.isArray(result) ? result : result?.result
     }
@@ -38,12 +37,12 @@ export const testLocales = () => {
     test('Use default locale for unscoped contents', async () => {
       const index = await $fetch(`${apiBaseUrl}/query`, {
         params: {
-          _params: JSON.stringify({ first: true, where: { _id: 'content:index.md' } })
-        }
+          _params: JSON.stringify({ first: true, where: { _id: 'content:index.md' } }),
+        },
       }).then(resolveResult)
 
       expect(index).toMatchObject({
-        _locale: 'en'
+        _locale: 'en',
       })
     })
   })

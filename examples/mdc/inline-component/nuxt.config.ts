@@ -1,11 +1,11 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
-    '@nuxt/ui'
+    '@nuxt/ui',
   ],
   content: {
     highlight: {
-      theme: 'one-dark-pro'
-    }
-  }
+      theme: 'one-dark-pro',
+    },
+  },
 })

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref, useAsyncData, queryContent } from '#imports'
+import { queryContent, ref, useAsyncData } from '#imports'
 
 const query = ref({
   where: [{
-    _partial: false
+    _partial: false,
   }],
   without: ['body', 'excerpt'],
   skip: 0,
-  limit: 10
+  limit: 10,
 })
 
 const qs = ref(JSON.stringify(query.value, null, 2))
@@ -18,7 +18,8 @@ watch(qs, (value) => {
   try {
     query.value = JSON.parse(value)
     parseError.value = null
-  } catch (e: any) {
+  }
+  catch (e: any) {
     parseError.value = e.message
   }
 })
@@ -27,7 +28,7 @@ const { data: docs } = await useAsyncData('query', () => {
   return queryContent(query.value).find()
 }, { watch: [query] })
 
-const tabber = (event: any) => {
+function tabber(event: any) {
   const originalSelectionStart = event.target.selectionStart
   const startText = qs.value.slice(0, event.target.selectionStart)
   const endText = qs.value.slice(event.target.selectionStart)
@@ -38,7 +39,7 @@ const tabber = (event: any) => {
   })
 }
 
-const enterer = (event: any) => {
+function enterer(event: any) {
   const originalSelectionStart = event.target.selectionStart
   const startText = qs.value.slice(0, event.target.selectionStart)
   const endText = qs.value.slice(event.target.selectionStart)
@@ -48,9 +49,9 @@ const enterer = (event: any) => {
   // Count the number of spaces at the beggining of the current line
   let nbSpaces = currentLine.match(/^\s*/)?.[0].length || 0
   // If the last character is a colon, add one tab
-  if (['[', '{'].includes(lastChar)) {
+  if (['[', '{'].includes(lastChar))
     nbSpaces += 2
-  }
+
   const tabs = ' '.repeat(nbSpaces)
 
   qs.value = `${startText}\n${tabs}${endText}`

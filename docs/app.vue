@@ -3,43 +3,43 @@ const route = useRoute()
 
 useServerSeoMeta({
   ogSiteName: 'Nuxt Content',
-  twitterCard: 'summary_large_image'
+  twitterCard: 'summary_large_image',
 })
 
 useHead({
   htmlAttrs: {
-    lang: 'en'
-  }
+    lang: 'en',
+  },
 })
 
 const links = [{
   label: 'Documentation',
   icon: 'i-heroicons-book-open-solid',
-  to: '/get-started/installation'
+  to: '/get-started/installation',
 }, {
   label: 'Playground',
   icon: 'i-ph-play-duotone',
-  to: '/playground'
+  to: '/playground',
 }, {
   label: 'Templates',
   icon: 'i-ph-browsers-duotone',
   to: 'https://nuxt.com/templates',
-  target: '_blank'
+  target: '_blank',
 }, {
   label: 'Editor',
   icon: 'i-ph-pencil-duotone',
   to: 'https://nuxt.studio/?utm_source=content-site&utm_medium=header',
-  target: '_blank'
+  target: '_blank',
 }, {
   label: 'Releases',
   icon: 'i-heroicons-rocket-launch-solid',
   to: 'https://github.com/nuxt/content/releases',
-  target: '_blank'
+  target: '_blank',
 }]
 
 const { data: files } = useLazyFetch('/api/search.json', {
   default: () => [],
-  server: false
+  server: false,
 })
 
 const { data: nav } = await useAsyncData('navigation', () => fetchContentNavigation())

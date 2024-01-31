@@ -19,7 +19,7 @@ const ContentList = defineComponent({
     path: {
       type: String,
       required: false,
-      default: undefined
+      default: undefined,
     },
 
     /**
@@ -28,8 +28,8 @@ const ContentList = defineComponent({
     query: {
       type: Object as PropType<QueryBuilderParams>,
       required: false,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
 
   /**
@@ -40,7 +40,7 @@ const ContentList = defineComponent({
    * Content not found fallback
    * @slot not-found
    */
-  render (ctx: any) {
+  render(ctx: any) {
     const slots = useSlots()
 
     const { path, query } = ctx
@@ -48,7 +48,7 @@ const ContentList = defineComponent({
     // Merge local `path` props and apply `findOne` query default.
     const contentQueryProps = {
       ...query || {},
-      path: path || query?.path || '/'
+      path: path || query?.path || '/',
     }
 
     return h(
@@ -56,16 +56,16 @@ const ContentList = defineComponent({
       contentQueryProps,
       {
         // Default slot
-        default: slots?.default
+        'default': slots?.default
           ? ({ data, refresh, isPartial }: any) => slots.default!({ list: data, refresh, isPartial, ...this.$attrs })
           : (bindings: any) => emptyNode('default', bindings.data),
         // Empty slot
-        empty: (bindings: any) => slots?.empty ? slots.empty(bindings) : emptyNode('default', bindings?.data),
+        'empty': (bindings: any) => slots?.empty ? slots.empty(bindings) : emptyNode('default', bindings?.data),
         // Not Found slot
-        'not-found': (bindings: any) => slots?.['not-found'] ? slots?.['not-found']?.(bindings) : emptyNode('not-found', bindings?.data)
-      }
+        'not-found': (bindings: any) => slots?.['not-found'] ? slots?.['not-found']?.(bindings) : emptyNode('not-found', bindings?.data),
+      },
     )
-  }
+  },
 })
 
 export default ContentList as typeof ContentList & {

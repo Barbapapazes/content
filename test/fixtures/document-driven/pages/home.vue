@@ -4,8 +4,8 @@ import { definePageMeta, useContent, useContentHead } from '#imports'
 definePageMeta({
   documentDriven: {
     page: '/',
-    surround: '/debug'
-  }
+    surround: '/debug',
+  },
 })
 
 const { page, surround } = useContent()

@@ -1,7 +1,6 @@
 <script setup lang="ts">
 // Utils from Nuxt Content
 const { flatUnwrap } = useUnwrap()
-
 </script>
 
 <template>

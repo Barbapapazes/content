@@ -1,8 +1,8 @@
 <script setup lang="ts">
+const props = defineProps<{ language: string, value: string, readOnly: boolean }>()
 // @ts-nocheck
 const emit = defineEmits<(e: 'change', content: string) => void>()
 const editorState = ref('loading')
-const props = defineProps<{ language: string; value: string, readOnly: boolean }>()
 const target = ref()
 
 onMounted(
@@ -14,24 +14,25 @@ onMounted(
         language: props.language,
         code: props.value,
         readOnly: props.readOnly,
-        onChanged (content: string) {
+        onChanged(content: string) {
           emit('change', content)
         },
-        onDidCreateEditor () {
+        onDidCreateEditor() {
           editorState.value = 'ready'
-        }
+        },
       })
 
       watch(
         () => props.value,
-        () => setContent(props.value)
+        () => setContent(props.value),
       )
 
       emit('change', props.value)
-    } catch (_) {
+    }
+    catch (_) {
       editorState.value = 'error'
     }
-  }
+  },
 )
 </script>
 
@@ -59,11 +60,11 @@ css({
   '.editor': {
     position: 'relative',
     height: '100%',
-    width: '100%'
+    width: '100%',
   },
   '.editor-target': {
     height: '100%',
-    width: '100%'
+    width: '100%',
   },
   '.overlay': {
     position: 'absolute',
@@ -73,7 +74,7 @@ css({
     width: '100%',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
-  }
+    alignItems: 'center',
+  },
 })
 </style>

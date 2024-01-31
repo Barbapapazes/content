@@ -1,8 +1,8 @@
 <script setup>
 definePageMeta({
   documentDriven: {
-    page: '/'
-  }
+    page: '/',
+  },
 })
 
 const { page } = useContent()

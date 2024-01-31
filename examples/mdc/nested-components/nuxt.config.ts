@@ -1,10 +1,10 @@
 export default defineNuxtConfig({
   modules: [
     '@nuxt/content',
-    '@nuxt/ui'
+    '@nuxt/ui',
   ],
   components: [{
     path: '~/components',
-    global: true
-  }]
+    global: true,
+  }],
 })

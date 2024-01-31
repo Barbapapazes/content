@@ -44,14 +44,14 @@ export default defineNuxtConfig({
     '/blog/announcing-v2': { redirect: '/' },
     '/v1': { redirect: '/v1/getting-started/introduction' },
     // Shortcuts
-    '/document-driven': { redirect: '/document-driven/introduction' }
+    '/document-driven': { redirect: '/document-driven/introduction' },
   },
   nitro: {
     prerender: {
       routes: [
-        '/api/search.json'
-      ]
-    }
+        '/api/search.json',
+      ],
+    },
   },
   modules: [
     '@nuxt/content',
@@ -61,26 +61,26 @@ export default defineNuxtConfig({
     '@nuxtjs/fontaine',
     '@nuxtjs/google-fonts',
     'nuxt-og-image',
-    '@nuxtjs/plausible'
+    '@nuxtjs/plausible',
   ],
 
   colorMode: {
-    preference: 'dark'
+    preference: 'dark',
   },
   ui: {
-    icons: ['heroicons', 'simple-icons', 'ph']
+    icons: ['heroicons', 'simple-icons', 'ph'],
   },
 
   fontMetrics: {
-    fonts: ['DM Sans']
+    fonts: ['DM Sans'],
   },
 
   googleFonts: {
     display: 'swap',
     download: true,
     families: {
-      'DM+Sans': [400, 500, 600, 700]
-    }
+      'DM+Sans': [400, 500, 600, 700],
+    },
   },
 
   hooks: {
@@ -89,8 +89,9 @@ export default defineNuxtConfig({
     // To avoid lagging during page navigation on client-side
     'components:extend': function (components) {
       for (const comp of components) {
-        if (comp.global) { comp.global = 'sync' }
+        if (comp.global)
+          comp.global = 'sync'
       }
-    }
-  }
+    },
+  },
 })

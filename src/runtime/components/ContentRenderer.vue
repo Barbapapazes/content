@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, watch, h, useSlots } from 'vue'
+import { defineComponent, h, useSlots, watch } from 'vue'
 import ContentRendererMarkdown from './ContentRendererMarkdown.vue'
 
 export default defineComponent({
@@ -11,7 +11,7 @@ export default defineComponent({
     value: {
       type: Object,
       required: false,
-      default: () => ({})
+      default: () => ({}),
     },
 
     /**
@@ -20,7 +20,7 @@ export default defineComponent({
      */
     excerpt: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     /**
@@ -29,10 +29,10 @@ export default defineComponent({
      */
     tag: {
       type: String,
-      default: 'div'
-    }
+      default: 'div',
+    },
   },
-  setup (props) {
+  setup(props) {
     /**
      * Watch `props.excerpt` and display error message if not found.
      */
@@ -40,22 +40,21 @@ export default defineComponent({
       () => props.excerpt,
       (newExcerpt) => {
         if (newExcerpt && !props.value?.excerpt) {
-          // eslint-disable-next-line no-console
           console.warn(`No excerpt found for document content/${props?.value?._path}.${props?.value?._extension}!`)
-          // eslint-disable-next-line no-console
+
           console.warn('Make sure to use <!--more--> in your content if you want to use excerpt feature.')
         }
       },
       {
-        immediate: true
-      }
+        immediate: true,
+      },
     )
   },
   /**
    * Content empty fallback
    * @slot empty
    */
-  render (ctx: any) {
+  render(ctx: any) {
     const slots = useSlots()
 
     const { value, excerpt, tag } = ctx
@@ -67,9 +66,8 @@ export default defineComponent({
       return slots.empty({ value, excerpt, tag, ...this.$attrs })
     }
 
-    if (slots?.default) {
+    if (slots?.default)
       return slots.default({ value, excerpt, tag, ...this.$attrs })
-    }
 
     // Use built-in ContentRendererMarkdown
     if (markdownAST?.type === 'root' && markdownAST?.children?.length) {
@@ -79,8 +77,8 @@ export default defineComponent({
           value,
           excerpt,
           tag,
-          ...this.$attrs
-        }
+          ...this.$attrs,
+        },
       )
     }
 
@@ -88,8 +86,8 @@ export default defineComponent({
     return h(
       'pre',
       null,
-      JSON.stringify({ message: 'You should use slots with <ContentRenderer>', value, excerpt, tag }, null, 2)
+      JSON.stringify({ message: 'You should use slots with <ContentRenderer>', value, excerpt, tag }, null, 2),
     )
-  }
+  },
 })
 </script>

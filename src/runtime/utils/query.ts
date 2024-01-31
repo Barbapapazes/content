@@ -1,16 +1,17 @@
-import { getQuery, type H3Event, createError } from 'h3'
+import { type H3Event, createError, getQuery } from 'h3'
 import type { ContentQueryBuilderParams, ContentQueryBuilderWhere } from '../types/query'
 import { jsonParse, jsonStringify } from './json'
 
-const parseJSONQueryParams = (body: string) => {
+function parseJSONQueryParams(body: string) {
   try {
     return jsonParse(body)
-  } catch (e) {
+  }
+  catch (e) {
     throw createError({ statusCode: 400, message: 'Invalid _params query' })
   }
 }
 
-export const encodeQueryParams = (params: ContentQueryBuilderParams) => {
+export function encodeQueryParams(params: ContentQueryBuilderParams) {
   let encoded = jsonStringify(params)
   encoded = typeof Buffer !== 'undefined' ? Buffer.from(encoded).toString('base64') : btoa(encoded)
 
@@ -21,7 +22,7 @@ export const encodeQueryParams = (params: ContentQueryBuilderParams) => {
   return chunks.join('/')
 }
 
-export const decodeQueryParams = (encoded: string) => {
+export function decodeQueryParams(encoded: string) {
   // remove chunks
   encoded = encoded.replace(/\//g, '')
 
@@ -33,11 +34,10 @@ export const decodeQueryParams = (encoded: string) => {
 }
 
 const memory: Record<string, ContentQueryBuilderParams> = {}
-export const getContentQuery = (event: H3Event): ContentQueryBuilderParams => {
+export function getContentQuery(event: H3Event): ContentQueryBuilderParams {
   const { params } = event.context.params || {}
-  if (params) {
+  if (params)
     return decodeQueryParams(params.replace(/.json$/, ''))
-  }
 
   const qid = event.context.params?.qid?.replace(/.json$/, '')
   const query: any = getQuery(event) || {}
@@ -46,30 +46,26 @@ export const getContentQuery = (event: H3Event): ContentQueryBuilderParams => {
   if (qid && query._params) {
     memory[qid] = parseJSONQueryParams(decodeURIComponent(query._params))
 
-    if (memory[qid].where && !Array.isArray(memory[qid].where)) {
+    if (memory[qid].where && !Array.isArray(memory[qid].where))
       memory[qid].where = [memory[qid].where as any as ContentQueryBuilderWhere]
-    }
 
     return memory[qid]
   }
-  if (qid && memory[qid]) {
+  if (qid && memory[qid])
     return memory[qid]
-  }
 
   // Using /api/_content/query?_params={{JSON_FORMAT}}
-  if (query._params) {
+  if (query._params)
     return parseJSONQueryParams(decodeURIComponent(query._params))
-  }
 
   // Using /api/_content/query?path=...&only=...
 
   // Support both ?only=path,title and ?only=path&only=title
-  if (typeof query.only === 'string' && query.only.includes(',')) {
+  if (typeof query.only === 'string' && query.only.includes(','))
     query.only = (query.only as string).split(',').map(s => s.trim())
-  }
-  if (typeof query.without === 'string' && query.without.includes(',')) {
+
+  if (typeof query.without === 'string' && query.without.includes(','))
     query.without = (query.without as string).split(',').map(s => s.trim())
-  }
 
   const where = query.where || {}
   // ?partial=true|false&draft=true|false&empty=true|false
@@ -91,16 +87,16 @@ export const getContentQuery = (event: H3Event): ContentQueryBuilderParams => {
   // ?[query]=...
   const reservedKeys = ['partial', 'draft', 'only', 'without', 'where', 'sort', 'limit', 'skip']
   for (const key of Object.keys(query)) {
-    if (reservedKeys.includes(key)) { continue }
+    if (reservedKeys.includes(key))
+      continue
     query.where = query.where || {}
     query.where[key] = query[key]
   }
 
-  if (Object.keys(where).length > 0) {
+  if (Object.keys(where).length > 0)
     query.where = [where]
-  } else {
+  else
     delete query.where
-  }
 
   return query
 }

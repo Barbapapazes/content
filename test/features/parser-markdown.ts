@@ -1,16 +1,16 @@
-import { describe, test, expect, assert } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { $fetch } from '@nuxt/test-utils'
 import { visit } from 'unist-util-visit'
 
-export const testMarkdownParser = () => {
+export function testMarkdownParser() {
   describe('Parser (.md)', () => {
     test('Index file', async () => {
       const parsed = await $fetch('/api/parse', {
         method: 'POST',
         body: {
           id: 'content:index.md',
-          content: '# Index'
-        }
+          content: '# Index',
+        },
       })
 
       expect(parsed).toHaveProperty('_id')
@@ -28,8 +28,8 @@ export const testMarkdownParser = () => {
           method: 'POST',
           body: {
             id: 'content:index.md',
-            content: '`code`'
-          }
+            content: '`code`',
+          },
         })
 
         expect(parsed).toHaveProperty('_id')
@@ -49,9 +49,9 @@ export const testMarkdownParser = () => {
               '```ts [file.ts]{4-6,7} other code block info',
               'let code = undefined;',
               'return code;',
-              '```'
-            ].join('\n')
-          }
+              '```',
+            ].join('\n'),
+          },
         })
 
         expect(parsed).toHaveProperty('body')
@@ -74,9 +74,9 @@ export const testMarkdownParser = () => {
               '```ts[file.ts]{4-6,7}other code block info',
               'let code = undefined;',
               'return code;',
-              '```'
-            ].join('\n')
-          }
+              '```',
+            ].join('\n'),
+          },
         })
 
         expect(parsed).toHaveProperty('body')
@@ -99,9 +99,9 @@ export const testMarkdownParser = () => {
               '```[] {4-6,7} other code block info',
               'let code = undefined;',
               'return code;',
-              '```'
-            ].join('\n')
-          }
+              '```',
+            ].join('\n'),
+          },
         })
 
         expect(parsed).toHaveProperty('body')
@@ -126,9 +126,9 @@ export const testMarkdownParser = () => {
               '---',
               'title: Index',
               '---',
-              '# Hello'
-            ].join('\n')
-          }
+              '# Hello',
+            ].join('\n'),
+          },
         })
         expect(parsed._draft).toBe(false)
       })
@@ -142,9 +142,9 @@ export const testMarkdownParser = () => {
               '---',
               'title: Index',
               '---',
-              '# Hello'
-            ].join('\n')
-          }
+              '# Hello',
+            ].join('\n'),
+          },
         })
         expect(parsed._draft).toBe(true)
       })
@@ -158,9 +158,9 @@ export const testMarkdownParser = () => {
               '---',
               '_draft: true',
               '---',
-              '# Draft'
-            ].join('\n')
-          }
+              '# Draft',
+            ].join('\n'),
+          },
         })
         expect(parsed._draft).toBe(true)
       })
@@ -174,9 +174,9 @@ export const testMarkdownParser = () => {
               '---',
               '_draft: false',
               '---',
-              '# Draft'
-            ].join('\n')
-          }
+              '# Draft',
+            ].join('\n'),
+          },
         })
         expect(parsed._draft).toBe(false)
       })
@@ -187,8 +187,8 @@ export const testMarkdownParser = () => {
         method: 'POST',
         body: {
           id: 'content:index.md',
-          content: '<!-- comment -->'
-        }
+          content: '<!-- comment -->',
+        },
       })
 
       expect(parsed).toHaveProperty('_id')
@@ -205,8 +205,8 @@ export const testMarkdownParser = () => {
         method: 'POST',
         body: {
           id: 'content:index.md',
-          content: ['', '', ''].join('\n')
-        }
+          content: ['', '', ''].join('\n'),
+        },
       })
 
       expect(parsed.body).toHaveProperty('children')
@@ -227,9 +227,9 @@ export const testMarkdownParser = () => {
             ':hello:hello', // invalid
             ':hello:', // invalid
             '`:hello`', // code
-            ':rocket:' // emoji
-          ].join('\n')
-        }
+            ':rocket:', // emoji
+          ].join('\n'),
+        },
       })
 
       let compComponentCount = 0
@@ -256,8 +256,8 @@ export const testMarkdownParser = () => {
         method: 'POST',
         body: {
           id: 'content:index.md',
-          content: '<h1>Hello</h1>'
-        }
+          content: '<h1>Hello</h1>',
+        },
       })
 
       expect(parsed.body).toHaveProperty('children')
@@ -272,9 +272,9 @@ export const testMarkdownParser = () => {
           id: 'content:index.md',
           content: [
             '# Hello [World]{.text-green}',
-            'The answer to life the universe and everything: [42]{.font-bold .text-green}'
-          ].join('\n')
-        }
+            'The answer to life the universe and everything: [42]{.font-bold .text-green}',
+          ].join('\n'),
+        },
       })
 
       expect(parsed.body).toHaveProperty('children')
@@ -304,9 +304,9 @@ export const testMarkdownParser = () => {
             '[link1](../../01.foo.md#bar)',
             '[link1](../../01.foo/file.md#bar)',
             '[link1](../../01.foo.draft.md)',
-            '[link1](../../_foo.draft.md)'
-          ].join('\n')
-        }
+            '[link1](../../_foo.draft.md)',
+          ].join('\n'),
+        },
       })
 
       const nodes = parsed.body.children[0].children
@@ -331,15 +331,15 @@ export const testMarkdownParser = () => {
         '## `<Alert />` -',
         '### `<Alert />` \\#',
         '### `<Alert />`.',
-        '### 🎨 Alert'
+        '### 🎨 Alert',
       ]
       for (const heading of headings) {
         const parsed = await $fetch('/api/parse', {
           method: 'POST',
           body: {
             id: 'content:index.md',
-            content: heading
-          }
+            content: heading,
+          },
         })
         expect(parsed.body.children[0].props.id).toEqual('alert')
       }

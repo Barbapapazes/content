@@ -1,15 +1,15 @@
-import { useRuntimeConfig, refreshNuxtData } from '#imports'
+import { refreshNuxtData, useRuntimeConfig } from '#imports'
 
 const logger = {
   // eslint-disable-next-line no-console
   log: (...args: any[]) => console.log('[Content]', ...args),
-  // eslint-disable-next-line no-console
-  warn: (...args: any[]) => console.warn('[Content]', ...args)
+
+  warn: (...args: any[]) => console.warn('[Content]', ...args),
 }
 
 let ws: WebSocket | undefined
 
-export function useContentWebSocket () {
+export function useContentWebSocket() {
   if (!window.WebSocket) {
     logger.warn('Could not enable hot reload, your browser does not support WebSocket.')
     return
@@ -19,10 +19,12 @@ export function useContentWebSocket () {
     try {
       const data = JSON.parse(message.data)
 
-      if (!data) { return }
+      if (!data)
+        return
 
       refreshNuxtData()
-    } catch (err) {}
+    }
+    catch (err) {}
   }
 
   const onOpen = () => logger.log('WS connected!')
@@ -43,7 +45,8 @@ export function useContentWebSocket () {
     if (e.code === 1000 || e.code === 1005) {
       // Normal close
       logger.log('WS closed!')
-    } else {
+    }
+    else {
       // Unkown error
       connect(true)
     }
@@ -59,7 +62,8 @@ export function useContentWebSocket () {
     if (ws) {
       try {
         ws.close()
-      } catch (err) {}
+      }
+      catch (err) {}
       ws = undefined
     }
 
@@ -79,6 +83,6 @@ export function useContentWebSocket () {
   connect()
 
   return {
-    connect
+    connect,
   }
 }

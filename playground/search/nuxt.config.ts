@@ -8,12 +8,12 @@ export default defineNuxtConfig({
       search: {
         mode: 'full-text',
         indexed: true,
-        filterQuery: { _draft: false, _partial: false }
-      }
-    }
+        filterQuery: { _draft: false, _partial: false },
+      },
+    },
   },
 
   typescript: {
-    includeWorkspace: true
-  }
+    includeWorkspace: true,
+  },
 })

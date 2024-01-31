@@ -3,8 +3,8 @@ const query = {
   path: '/dogs',
   limit: 10,
   where: [{
-    _partial: false
-  }]
+    _partial: false,
+  }],
 }
 </script>
 

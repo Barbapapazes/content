@@ -10,14 +10,13 @@ export default defineEventHandler(async (event) => {
   if (query.first) {
     let contentQuery = serverQueryContent(event, query)
 
-    if (!advanceQuery) {
+    if (!advanceQuery)
       contentQuery = contentQuery.withDirConfig()
-    }
 
     const content = await contentQuery.findOne()
 
     const _result = advanceQuery ? content?.result : content
-    // @ts-ignore
+    // @ts-expect-error
     const missing = !_result && !content?.dirConfig?.navigation?.redirect && !content?._dir?.navigation?.redirect
     // If no documents matchs and using findOne()
     if (missing) {
@@ -26,17 +25,16 @@ export default defineEventHandler(async (event) => {
         statusCode: 404,
         data: {
           description: 'Could not find document for the given query.',
-          query
-        }
+          query,
+        },
       })
     }
 
     return content
   }
 
-  if (query.count) {
+  if (query.count)
     return serverQueryContent(event, query).count()
-  }
 
   return serverQueryContent(event, query).find()
 })

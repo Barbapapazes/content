@@ -1,4 +1,4 @@
-import type { QueryBuilder, SortOptions, ParsedContent } from '../types'
+import type { ParsedContent, QueryBuilder, SortOptions } from '../types'
 import type { ContentQueryBuilder, ContentQueryBuilderParams, ContentQueryFetcher } from '../types/query'
 import { ensureArray } from './match/utils'
 
@@ -9,14 +9,13 @@ interface QueryOptions {
   legacy?: boolean
 }
 
-export function createQuery <T = ParsedContent>(fetcher: ContentQueryFetcher<T>, opts: QueryOptions & { legacy: true }): QueryBuilder<T>
-export function createQuery <T = ParsedContent>(fetcher: ContentQueryFetcher<T>, opts: QueryOptions & { legacy: false }): ContentQueryBuilder<T>
-export function createQuery <T = ParsedContent> (fetcher: ContentQueryFetcher<T>, opts: QueryOptions = {}) {
+export function createQuery<T = ParsedContent>(fetcher: ContentQueryFetcher<T>, opts: QueryOptions & { legacy: true }): QueryBuilder<T>
+export function createQuery<T = ParsedContent>(fetcher: ContentQueryFetcher<T>, opts: QueryOptions & { legacy: false }): ContentQueryBuilder<T>
+export function createQuery<T = ParsedContent>(fetcher: ContentQueryFetcher<T>, opts: QueryOptions = {}) {
   const queryParams: ContentQueryBuilderParams = {}
 
-  for (const key of Object.keys(opts.initialParams || {})) {
+  for (const key of Object.keys(opts.initialParams || {}))
     queryParams[key] = arrayParams.includes(key) ? ensureArray(opts.initialParams![key]) : opts.initialParams![key]
-  }
 
   /**
    * Factory function to create a parameter setter
@@ -30,19 +29,17 @@ export function createQuery <T = ParsedContent> (fetcher: ContentQueryFetcher<T>
 
   const resolveResult = (result: any) => {
     if (opts.legacy) {
-      if (result?.surround) {
+      if (result?.surround)
         return result.surround
-      }
 
-      if (!result) {
+      if (!result)
         return result
-      }
 
       if ((result as any)?.dirConfig) {
         result.result = {
           _path: (result as any).dirConfig?._path,
           ...(result.result as T),
-          _dir: (result as any).dirConfig
+          _dir: (result as any).dirConfig,
         }
       }
 
@@ -56,14 +53,14 @@ export function createQuery <T = ParsedContent> (fetcher: ContentQueryFetcher<T>
     params: () => ({
       ...queryParams,
       ...(queryParams.where ? { where: [...ensureArray(queryParams.where)] } : {}),
-      ...(queryParams.sort ? { sort: [...ensureArray(queryParams.sort)] } : {})
+      ...(queryParams.sort ? { sort: [...ensureArray(queryParams.sort)] } : {}),
     }),
     only: $set('only', ensureArray),
     without: $set('without', ensureArray),
     where: $set('where', (q: any) => [...ensureArray(queryParams.where), ...ensureArray(q)]),
     sort: $set('sort', (sort: SortOptions) => [...ensureArray(queryParams.sort), ...ensureArray(sort)]),
-    limit: $set('limit', v => parseInt(String(v), 10)),
-    skip: $set('skip', v => parseInt(String(v), 10)),
+    limit: $set('limit', v => Number.parseInt(String(v), 10)),
+    skip: $set('skip', v => Number.parseInt(String(v), 10)),
     // find
     find: () => fetcher(query as unknown as ContentQueryBuilder<T>).then(resolveResult),
     findOne: () => fetcher($set('first')(true)).then(resolveResult),
@@ -71,11 +68,11 @@ export function createQuery <T = ParsedContent> (fetcher: ContentQueryFetcher<T>
     // locale
     locale: (_locale: string) => query.where({ _locale }),
     withSurround: $set('surround', (surroundQuery, options) => ({ query: surroundQuery, ...options })),
-    withDirConfig: () => $set('dirConfig')(true)
+    withDirConfig: () => $set('dirConfig')(true),
   }
 
   if (opts.legacy) {
-    // @ts-ignore
+    // @ts-expect-error
     query.findSurround = (surroundQuery, options) => {
       return query.withSurround(surroundQuery, options).find().then(resolveResult)
     }

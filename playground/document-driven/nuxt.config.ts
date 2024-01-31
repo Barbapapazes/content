@@ -6,22 +6,22 @@ export default defineNuxtConfig({
         {
           rel: 'icon',
           type: 'image/ico',
-          href: '/favicon.ico'
-        }
-      ]
-    }
+          href: '/favicon.ico',
+        },
+      ],
+    },
   },
   content: {
     documentDriven: {
       globals: {
         theme: {
           where: [{
-            _id: 'content:_theme.yml'
+            _id: 'content:_theme.yml',
           }],
-          without: ['_']
-        }
+          without: ['_'],
+        },
       },
-      layoutFallbacks: ['theme']
-    }
-  }
+      layoutFallbacks: ['theme'],
+    },
+  },
 })

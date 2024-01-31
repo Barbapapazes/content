@@ -2,11 +2,11 @@ import { useCookie, useRoute } from '#imports'
 
 let showWarning = true
 
-export const useContentPreview = () => {
+export function useContentPreview() {
   const getPreviewToken = () => {
-    return useCookie('previewToken').value ||
-    (process.client && sessionStorage.getItem('previewToken')) ||
-    undefined
+    return useCookie('previewToken').value
+      || (process.client && sessionStorage.getItem('previewToken'))
+      || undefined
   }
 
   const setPreviewToken = (token: string | undefined) => {
@@ -15,11 +15,10 @@ export const useContentPreview = () => {
     useRoute().query.preview = token || ''
 
     if (process.client) {
-      if (token) {
+      if (token)
         sessionStorage.setItem('previewToken', token)
-      } else {
+      else
         sessionStorage.removeItem('previewToken')
-      }
 
       window.location.reload()
     }
@@ -28,23 +27,20 @@ export const useContentPreview = () => {
   const isEnabled = () => {
     const query = useRoute().query
     // Disable clientDB when `?preview` is set in query, and it has falsy value
-    if (Object.prototype.hasOwnProperty.call(query, 'preview') && !query.preview) {
+    if (Object.prototype.hasOwnProperty.call(query, 'preview') && !query.preview)
       return false
-    }
 
     // Enable clientDB when preview mode is enabled
     if (query.preview || useCookie('previewToken').value) {
       if (process.dev && showWarning) {
-        // eslint-disable-next-line no-console
         console.warn('[content] Client DB enabled since a preview token is set (either in query or cookie).')
         showWarning = false
       }
       return true
     }
 
-    if (process.client && sessionStorage.getItem('previewToken')) {
+    if (process.client && sessionStorage.getItem('previewToken'))
       return true
-    }
 
     return false
   }
@@ -52,6 +48,6 @@ export const useContentPreview = () => {
   return {
     isEnabled,
     getPreviewToken,
-    setPreviewToken
+    setPreviewToken,
   }
 }

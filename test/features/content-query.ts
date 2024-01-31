@@ -1,15 +1,14 @@
-import { describe, expect, test, assert } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { $fetch, useTestContext } from '@nuxt/test-utils'
 import { hash } from 'ohash'
 
-export const testContentQuery = () => {
-  // @ts-ignore
+export function testContentQuery() {
+  // @ts-expect-error
   const apiBaseUrl = useTestContext().options.nuxtConfig.content?.api?.baseURL || '/api/_content'
   const resolveResult = (result: any) => {
     if (!useTestContext().options.nuxtConfig.content?.experimental?.advanceQuery) {
-      if (result?.surround) {
+      if (result?.surround)
         return result.surround
-      }
 
       return result?._id || Array.isArray(result) ? result : result?.result
     }
@@ -21,14 +20,14 @@ export const testContentQuery = () => {
       const params = { first: true, where: { _id } }
       const qid = hash(params)
       return $fetch(`${apiBaseUrl}/query/${qid}`, {
-        params: { _params: JSON.stringify(params) }
+        params: { _params: JSON.stringify(params) },
       }).then(resolveResult)
     }
     test('List contents', async () => {
       const params = { only: '_id' }
       const qid = hash(params)
       const docs = await $fetch(`${apiBaseUrl}/query/${qid}`, {
-        params: { _params: JSON.stringify(params) }
+        params: { _params: JSON.stringify(params) },
       }).then(resolveResult)
 
       const ids = docs.map((doc: any) => doc._id)

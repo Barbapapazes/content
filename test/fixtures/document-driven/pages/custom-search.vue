@@ -5,10 +5,10 @@ definePageMeta({
   documentDriven: {
     page: {
       score: {
-        $eq: 23.5
-      }
-    }
-  }
+        $eq: 23.5,
+      },
+    },
+  },
 })
 
 const { page, surround } = useContent()

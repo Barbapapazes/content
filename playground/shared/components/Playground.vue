@@ -1,21 +1,3 @@
-<template>
-  <div class="playground">
-    <textarea v-model="content" />
-    <div class="content">
-      <div class="tabs">
-        <button v-for="name in tabs" :key="name" class="outline" :class="{ active: name === tab }" @click="tab = name">
-          {{ name }}
-        </button>
-      </div>
-
-      <MDC v-slot="{ data, body }" :value="content">
-        <MDCRenderer v-if="tab === 'Preview'" :body="body" :data="data" />
-        <pre v-if="tab === 'AST'" style="padding: 1rem;">{{ body }}</pre>
-      </MDC>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
 import { ref } from 'vue'
 
@@ -55,6 +37,24 @@ This is an alert for _**{{ type }}**_
 ::
 `.trim())
 </script>
+
+<template>
+  <div class="playground">
+    <textarea v-model="content" />
+    <div class="content">
+      <div class="tabs">
+        <button v-for="name in tabs" :key="name" class="outline" :class="{ active: name === tab }" @click="tab = name">
+          {{ name }}
+        </button>
+      </div>
+
+      <MDC v-slot="{ data, body }" :value="content">
+        <MDCRenderer v-if="tab === 'Preview'" :body="body" :data="data" />
+        <pre v-if="tab === 'AST'" style="padding: 1rem;">{{ body }}</pre>
+      </MDC>
+    </div>
+  </div>
+</template>
 
 <style scoped>
 .playground {

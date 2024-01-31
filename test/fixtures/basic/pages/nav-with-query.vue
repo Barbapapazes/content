@@ -7,8 +7,8 @@ const numbersQuery = queryContent('numbers')
 
 const dogsQuery = {
   where: [
-    { _path: /^\/dogs/ }
-  ]
+    { _path: /^\/dogs/ },
+  ],
 }
 </script>
 

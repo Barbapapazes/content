@@ -1,20 +1,21 @@
 <script setup lang="ts">
 definePageMeta({
-  layout: 'docs'
+  layout: 'docs',
 })
 const route = useRoute()
 const { data: page } = await useAsyncData(`docs-${route.path}`, () => queryContent(route.path).findOne())
 
-if (!page.value) { throw createError({ statusCode: 404, statusMessage: 'Page not found' }) }
+if (!page.value)
+  throw createError({ statusCode: 404, statusMessage: 'Page not found' })
 
 const { data: surround } = await useAsyncData(`docs-${route.path}-surround`, () => {
   return queryContent()
     .where({ _extension: 'md', navigation: { $ne: false } })
     .findSurround(route.path.endsWith('/') ? route.path.slice(0, -1) : route.path)
 }, {
-  transform (surround) {
+  transform(surround) {
     return surround.map(doc => doc.navigation === false ? null : doc)
-  }
+  },
 })
 
 const titleSuffix = `Nuxt Content${route.path.includes('/v1/') ? ' V1' : ''}`
@@ -23,13 +24,13 @@ useSeoMeta({
   title: `${page.value.title} - ${titleSuffix}`,
   ogTitle: `${page.value.title} - ${titleSuffix}`,
   description: page.value.description,
-  ogDescription: page.value.description
+  ogDescription: page.value.description,
 })
 
 defineOgImage({
   component: 'Docs',
   title: page.value.title,
-  description: page.value.description
+  description: page.value.description,
 })
 
 const headline = computed(() => findPageHeadline(page.value))
@@ -38,40 +39,40 @@ const communityLinks = computed(() => [
     icon: 'i-ph-pen-duotone',
     label: 'Edit this page',
     to: `https://github.com/nuxt/content/edit/main/docs/content/${page?.value?._file}`,
-    target: '_blank'
+    target: '_blank',
   },
   {
     icon: 'i-ph-shooting-star-duotone',
     label: 'Star on GitHub',
     to: 'https://github.com/nuxt/content',
-    target: '_blank'
+    target: '_blank',
   },
   {
     icon: 'i-ph-chat-centered-text-duotone',
     label: 'Chat on Discord',
     to: 'https://chat.nuxt.dev',
-    target: '_blank'
+    target: '_blank',
   },
   {
     icon: 'i-ph-hand-heart-duotone',
     label: 'Become a Sponsor',
     to: 'https://github.com/sponsors/nuxt',
-    target: '_blank'
+    target: '_blank',
   },
   {
     icon: 'i-simple-icons-nuxtdotjs',
     label: 'Nuxt docs',
     to: 'https://nuxt.com',
-    target: '_blank'
-  }
+    target: '_blank',
+  },
 ])
 const ecosystemLinks = [
   {
     icon: 'i-simple-icons-nuxtdotjs',
     label: 'Nuxt Studio',
     to: 'https://nuxt.studio/?utm_source=content-site&utm_medium=aside&utm_campaign=docs',
-    target: '_blank'
-  }
+    target: '_blank',
+  },
 ]
 </script>
 

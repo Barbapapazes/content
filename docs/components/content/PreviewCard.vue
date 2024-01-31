@@ -2,8 +2,8 @@
 defineProps({
   prose: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 })
 </script>
 

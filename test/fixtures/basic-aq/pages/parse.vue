@@ -1,11 +1,5 @@
-<template>
-  <div>
-    <ContentRendererMarkdown :value="data" />
-  </div>
-</template>
-
 <script setup>
-import { useRoute, useAsyncData } from '#imports'
+import { useAsyncData, useRoute } from '#imports'
 
 const { content } = useRoute().query
 const { data } = await useAsyncData(content, async () => {
@@ -14,8 +8,14 @@ const { data } = await useAsyncData(content, async () => {
     cors: true,
     body: {
       id: 'content:index.md',
-      content: decodeURIComponent(content)
-    }
+      content: decodeURIComponent(content),
+    },
   })
 })
 </script>
+
+<template>
+  <div>
+    <ContentRendererMarkdown :value="data" />
+  </div>
+</template>

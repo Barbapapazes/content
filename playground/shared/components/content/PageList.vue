@@ -1,3 +1,8 @@
+<script setup lang="ts">
+const { find } = queryContent().where({ $not: { _path: '/' } }).sort({ _id: 1 })
+const { data: pages } = await useAsyncData('pages-list', find)
+</script>
+
 <template>
   <div>
     <hr>
@@ -12,8 +17,3 @@
     <hr>
   </div>
 </template>
-
-<script setup lang="ts">
-const { find } = queryContent().where({ $not: { _path: '/' } }).sort({ _id: 1 })
-const { data: pages } = await useAsyncData('pages-list', find)
-</script>

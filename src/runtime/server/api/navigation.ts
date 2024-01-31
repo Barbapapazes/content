@@ -11,9 +11,8 @@ export default defineEventHandler(async (event) => {
   // Read from cache if not preview and there is no query
   if (!isPreview(event) && Object.keys(query).length === 0) {
     const cache = await cacheStorage.getItem('content-navigation.json')
-    if (cache) {
+    if (cache)
       return cache
-    }
   }
 
   const contents = await serverQueryContent(event, query)
@@ -27,8 +26,8 @@ export default defineEventHandler(async (event) => {
        * Exclude any pages which have opted out of navigation via frontmatter.
        */
       navigation: {
-        $ne: false
-      }
+        $ne: false,
+      },
     })
     .find()
 
@@ -37,14 +36,14 @@ export default defineEventHandler(async (event) => {
     .find()
 
   const configs = (dirConfigs?.result || dirConfigs).reduce((configs, conf: ParsedContent) => {
-    if (conf.title?.toLowerCase() === 'dir') {
+    if (conf.title?.toLowerCase() === 'dir')
       conf.title = undefined
-    }
+
     const key = conf._path!.split('/').slice(0, -1).join('/') || '/'
     configs[key] = {
       ...conf,
       // Extract meta from body. (non MD files)
-      ...conf.body
+      ...conf.body,
     }
     return configs
   }, {} as Record<string, ParsedContentMeta>)

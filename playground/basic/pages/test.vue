@@ -1,3 +1,20 @@
+<script setup>
+import { ref } from 'vue'
+
+const md = ref(`---
+name: Sam
+---
+
+# Simple
+
+Simple paragraph
+
+\`\`\`typescript
+const a = 6;
+\`\`\`
+`)
+</script>
+
 <template>
   <div class="grid grid-cols-2 h-screen">
     <textarea
@@ -19,20 +36,3 @@
     </MDC>
   </div>
 </template>
-
-<script setup>
-import { ref } from 'vue'
-
-const md = ref(`---
-name: Sam
----
-
-# Simple
-
-Simple paragraph
-
-\`\`\`typescript
-const a = 6;
-\`\`\`
-`)
-</script>

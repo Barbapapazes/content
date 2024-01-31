@@ -1,17 +1,17 @@
 import MiniSearch, { type Options as MiniSearchOptions } from 'minisearch'
-import { useRuntimeConfig, useFetch, type MaybeRefOrGetter, ref, computed, toValue, type Ref } from '#imports'
+import { type MaybeRefOrGetter, type Ref, computed, ref, toValue, useFetch, useRuntimeConfig } from '#imports'
 
-export const defineMiniSearchOptions = <DataItem>(options: MiniSearchOptions<DataItem>) => {
+export function defineMiniSearchOptions<DataItem>(options: MiniSearchOptions<DataItem>) {
   return ref(options)
 }
 
-export const searchContent = async <DataItem>(search: MaybeRefOrGetter<string>, options: { miniSearch?: MaybeRefOrGetter<MiniSearchOptions<DataItem>> } = {}) => {
+export async function searchContent<DataItem>(search: MaybeRefOrGetter<string>, options: { miniSearch?: MaybeRefOrGetter<MiniSearchOptions<DataItem>> } = {}) {
   const runtimeConfig = useRuntimeConfig()
   const { content } = runtimeConfig.public
   const { integrity, api: { baseURL: baseAPI }, search: searchOptions } = content
   const { indexed: useIndexedSearch } = searchOptions || {}
 
-  const searchRoute = `${baseAPI}/search${integrity ? '-' + integrity : ''}`
+  const searchRoute = `${baseAPI}/search${integrity ? `-${integrity}` : ''}`
 
   if (useIndexedSearch) {
     const { options: miniSearchOptions } = searchOptions || {}
@@ -21,7 +21,7 @@ export const searchContent = async <DataItem>(search: MaybeRefOrGetter<string>, 
     if (!data.value) {
       throw createError({
         statusCode: 500,
-        message: 'Missing search data'
+        message: 'Missing search data',
       })
     }
 
@@ -33,7 +33,7 @@ export const searchContent = async <DataItem>(search: MaybeRefOrGetter<string>, 
   if (!options.miniSearch) {
     throw createError({
       statusCode: 500,
-      message: 'Missing miniSearch options'
+      message: 'Missing miniSearch options',
     })
   }
 
@@ -42,7 +42,7 @@ export const searchContent = async <DataItem>(search: MaybeRefOrGetter<string>, 
   if (!data.value) {
     throw createError({
       statusCode: 500,
-      message: 'Missing search data'
+      message: 'Missing search data',
     })
   }
 
@@ -51,7 +51,7 @@ export const searchContent = async <DataItem>(search: MaybeRefOrGetter<string>, 
   return results
 }
 
-const useIndexedMiniSearch = <DataItem>(search: MaybeRefOrGetter<string>, indexedData: MaybeRefOrGetter<string>, options: MaybeRefOrGetter<MiniSearchOptions<DataItem>>) => {
+function useIndexedMiniSearch<DataItem>(search: MaybeRefOrGetter<string>, indexedData: MaybeRefOrGetter<string>, options: MaybeRefOrGetter<MiniSearchOptions<DataItem>>) {
   const indexedMiniSearch = computed(() => {
     return MiniSearch.loadJSON(toValue(indexedData), toValue(options))
   })

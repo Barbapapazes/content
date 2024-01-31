@@ -5,14 +5,13 @@ interface MatchFactoryOptions {
   operators?: Record<string, QueryMatchOperator>
 }
 
-export function createMatch (opts: MatchFactoryOptions = {}) {
+export function createMatch(opts: MatchFactoryOptions = {}) {
   const operators = createOperators(match, opts.operators)
 
-  function match (item: any, conditions: any): boolean {
+  function match(item: any, conditions: any): boolean {
     // Match Regex and simple values
-    if (typeof conditions !== 'object' || conditions instanceof RegExp) {
+    if (typeof conditions !== 'object' || conditions instanceof RegExp)
       return operators.$eq(item, conditions)
-    }
 
     return Object.keys(conditions || {}).every((key) => {
       const condition = conditions[key]
@@ -29,28 +28,28 @@ export function createMatch (opts: MatchFactoryOptions = {}) {
   return match
 }
 
-function createOperators (match: (...args: any[]) => boolean, operators: Record<string, QueryMatchOperator> = {}) {
+function createOperators(match: (...args: any[]) => boolean, operators: Record<string, QueryMatchOperator> = {}) {
   return <Record<string, QueryMatchOperator>> {
     $match: (item, condition) => match(item, condition),
 
     /**
      * Match if item equals condition
-     **/
+     */
     $eq: (item: any, condition: any) => condition instanceof RegExp ? condition.test(item) : item === condition,
 
     /**
      * Match if item not equals condition
-     **/
+     */
     $ne: (item: any, condition: any) => condition instanceof RegExp ? !condition.test(item) : item !== condition,
 
     /**
      * Match is condition is false
-     **/
+     */
     $not: (item, condition) => !match(item, condition),
 
     /**
      * Match only if all of nested conditions are true
-     **/
+     */
     $and: (item, condition: Array<any>) => {
       assertArray(condition, '$and requires an array as condition')
 
@@ -59,7 +58,7 @@ function createOperators (match: (...args: any[]) => boolean, operators: Record<
 
     /**
      * Match if any of nested conditions is true
-     **/
+     */
     $or: (item, condition: Array<any>) => {
       assertArray(condition, '$or requires an array as condition')
 
@@ -68,14 +67,14 @@ function createOperators (match: (...args: any[]) => boolean, operators: Record<
 
     /**
      * Match if item is in condition array
-     **/
+     */
     $in: (item, condition) => ensureArray(condition).some(
-      (cond: any) => Array.isArray(item) ? match(item, { $contains: cond }) : match(item, cond)
+      (cond: any) => Array.isArray(item) ? match(item, { $contains: cond }) : match(item, cond),
     ),
 
     /**
      * Match if item contains every condition or math every rule in condition array
-     **/
+     */
     $contains: (item, condition) => {
       item = Array.isArray(item) ? item : String(item)
       return ensureArray(condition).every((i: any) => item.includes(i))
@@ -83,11 +82,10 @@ function createOperators (match: (...args: any[]) => boolean, operators: Record<
 
     /**
      * Ignore case contains
-     **/
+     */
     $icontains: (item, condition) => {
-      if (typeof condition !== 'string') {
+      if (typeof condition !== 'string')
         throw new TypeError('$icontains requires a string, use $contains instead')
-      }
 
       item = String(item).toLocaleLowerCase()
       return ensureArray(condition).every((i: any) => item.includes(i.toLocaleLowerCase()))
@@ -153,6 +151,6 @@ function createOperators (match: (...args: any[]) => boolean, operators: Record<
       return item >= condition
     },
 
-    ...(operators || {})
+    ...(operators || {}),
   }
 }

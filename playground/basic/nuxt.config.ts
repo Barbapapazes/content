@@ -4,28 +4,28 @@ import contentModule from '../../src/module'
 export default defineNuxtConfig({
   extends: ['../shared'],
   nitro: {
-    static: true
+    static: true,
   },
   content: {
     sources: {
       'translation-fa': {
         prefix: '/fa',
         driver: 'fs',
-        base: resolve(__dirname, 'content-fa')
-      }
+        base: resolve(__dirname, 'content-fa'),
+      },
     },
 
     ignores: [
       '\\.bak$',
-      'ignored/folder'
-    ]
+      'ignored/folder',
+    ],
   },
   typescript: {
-    includeWorkspace: true
+    includeWorkspace: true,
   },
   modules: [
-    // @ts-ignore
-    contentModule
+    // @ts-expect-error
+    contentModule,
     // '@nuxtjs/tailwindcss'
-  ]
+  ],
 })

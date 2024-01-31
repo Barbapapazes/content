@@ -4,22 +4,22 @@ import contentModule from '../../..'
 export default defineNuxtConfig({
   nitro: {
     plugins: [
-      '~/addons/nitro-plugin.ts'
-    ]
+      '~/addons/nitro-plugin.ts',
+    ],
   },
   components: {
     dirs: [
       {
         path: resolve(__dirname, './components'),
-        global: true
+        global: true,
       },
       {
         path: resolve(__dirname, './content'),
         global: true,
         pathPrefix: false,
-        prefix: ''
-      }
-    ]
+        prefix: '',
+      },
+    ],
   },
   modules: [contentModule],
   content: {
@@ -30,36 +30,36 @@ export default defineNuxtConfig({
         name: 'fa-ir',
         prefix: '/fa',
         driver: 'fs',
-        base: resolve(__dirname, 'content-fa')
-      }
+        base: resolve(__dirname, 'content-fa'),
+      },
     ],
     ignores: ['.*\\.vue'],
     navigation: {
-      fields: ['icon']
+      fields: ['icon'],
     },
     highlight: {
       theme: {
         default: 'github-light',
-        dark: 'github-dark'
-      }
+        dark: 'github-dark',
+      },
     },
     markdown: {
       // Object syntax can be used to override default options
       remarkPlugins: {
         // override remark-emoji options
         'remark-emoji': {
-          emoticon: false
+          emoticon: false,
         },
         // disable remark-gfm
         'remark-gfm': false,
         // add remark-oembed
-        'remark-oembed': {}
+        'remark-oembed': {},
       },
       // Array syntax can be used to add plugins
       rehypePlugins: [
         'rehype-figure',
-        ['rehype-wrap-all', [{ selector: 'ol', wrapper: 'p' }, { selector: 'ul', wrapper: 'p' }]]
-      ]
-    }
-  }
+        ['rehype-wrap-all', [{ selector: 'ol', wrapper: 'p' }, { selector: 'ul', wrapper: 'p' }]],
+      ],
+    },
+  },
 })

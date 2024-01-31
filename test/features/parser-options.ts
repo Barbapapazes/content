@@ -1,7 +1,7 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { $fetch } from '@nuxt/test-utils'
 
-export const testParserOptions = () => {
+export function testParserOptions() {
   describe('Parser Options', () => {
     test('custom locale', async () => {
       const parsed = await $fetch('/api/parse', {
@@ -11,10 +11,10 @@ export const testParserOptions = () => {
           content: ':component',
           options: {
             pathMeta: {
-              defaultLocale: 'jp'
-            }
-          }
-        }
+              defaultLocale: 'jp',
+            },
+          },
+        },
       })
       expect(parsed).toHaveProperty('_id')
       expect(parsed._locale).toBe('jp')

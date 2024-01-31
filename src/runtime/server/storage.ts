@@ -1,10 +1,10 @@
-import { type StorageValue, prefixStorage, type Storage } from 'unstorage'
+import { type Storage, type StorageValue, prefixStorage } from 'unstorage'
 import { joinURL, withLeadingSlash, withoutTrailingSlash } from 'ufo'
 import { hash as ohash } from 'ohash'
 import type { H3Event } from 'h3'
-// eslint-disable-next-line import/no-named-as-default
+
 import defu from 'defu'
-import type { ParsedContent, ContentTransformer } from '../types'
+import type { ContentTransformer, ParsedContent } from '../types'
 import { createQuery } from '../query/query'
 import { transformContent } from '../transformers'
 import { makeIgnored } from '../utils/config'
@@ -13,9 +13,11 @@ import { createPipelineFetcher } from '../query/match/pipeline'
 import type { ContentQueryBuilder, ContentQueryBuilderParams } from '../types/query'
 import { getPreview, isPreview } from './preview'
 import { getIndexedContentsList } from './content-index'
-// @ts-ignore
+
+// @ts-expect-error
 import { useNitroApp, useRuntimeConfig, useStorage } from '#imports'
-// @ts-ignore
+
+// @ts-expect-error
 import { transformers as customTransformers } from '#content/virtual/transformers'
 
 interface ParseContentOptions {
@@ -50,17 +52,16 @@ const isIgnored = makeIgnored(contentConfig.ignores)
 /**
  * Invalid key characters
  */
-const invalidKeyCharacters = "'\"?#/".split('')
+const invalidKeyCharacters = '\'"?#/'.split('')
 
 /**
  * Filter predicate for ignore patterns
  */
-const contentIgnorePredicate = (key: string) => {
-  if (key.startsWith('preview:') || isIgnored(key)) {
+function contentIgnorePredicate(key: string) {
+  if (key.startsWith('preview:') || isIgnored(key))
     return false
-  }
+
   if (invalidKeyCharacters.some(ik => key.includes(ik))) {
-    // eslint-disable-next-line no-console
     console.warn(`Ignoring [${key}]. File name should not contain any of the following characters: ${invalidKeyCharacters.join(', ')}`)
     return false
   }
@@ -68,17 +69,15 @@ const contentIgnorePredicate = (key: string) => {
   return true
 }
 
-export const getContentsIds = async (event: H3Event, prefix?: string) => {
+export async function getContentsIds(event: H3Event, prefix?: string) {
   let keys: string[] = []
 
-  if (isProduction) {
+  if (isProduction)
     keys = await cacheParsedStorage.getKeys(prefix)
-  }
 
   // Later: handle preview mode, etc
-  if (keys.length === 0) {
+  if (keys.length === 0)
     keys = await sourceStorage.getKeys(prefix)
-  }
 
   if (isPreview(event)) {
     const { key } = getPreview(event)
@@ -90,12 +89,11 @@ export const getContentsIds = async (event: H3Event, prefix?: string) => {
       await Promise.all(
         previewKeys.map(async (key) => {
           const meta = await sourceStorage.getMeta(key)
-          if (meta?.__deleted) {
+          if (meta?.__deleted)
             keysSet.delete(key.substring(previewPrefix.length))
-          } else {
+          else
             keysSet.add(key.substring(previewPrefix.length))
-          }
-        })
+        }),
       )
       keys = Array.from(keysSet)
     }
@@ -104,10 +102,9 @@ export const getContentsIds = async (event: H3Event, prefix?: string) => {
   return keys.filter(contentIgnorePredicate)
 }
 
-export function* chunksFromArray<T> (arr: T[], n: number) : Generator<T[], void> {
-  for (let i = 0; i < arr.length; i += n) {
+export function* chunksFromArray<T>(arr: T[], n: number): Generator<T[], void> {
+  for (let i = 0; i < arr.length; i += n)
     yield arr.slice(i, i + n)
-  }
 }
 
 export const getContentsList = (() => {
@@ -128,19 +125,18 @@ export const getContentsList = (() => {
   }
 
   return (event: H3Event, prefix?: string) => {
-    if (event.context.__contentList) {
+    if (event.context.__contentList)
       return event.context.__contentList
-    }
-    if (isPrerendering && cachedContents.length) {
+
+    if (isPrerendering && cachedContents.length)
       return cachedContents
-    }
 
     if (!pendingContentsListPromise) {
       pendingContentsListPromise = _getContentsList(event, prefix)
       pendingContentsListPromise.then((result) => {
-        if (isPrerendering) {
+        if (isPrerendering)
           cachedContents = result as ParsedContent[]
-        }
+
         event.context.__contentList = result as ParsedContent[]
         pendingContentsListPromise = null
       })
@@ -150,26 +146,23 @@ export const getContentsList = (() => {
 })()
 
 const pendingPromises: Record<string, Promise<ParsedContent>> = {}
-export const getContent = async (event: H3Event, id: string): Promise<ParsedContent> => {
+export async function getContent(event: H3Event, id: string): Promise<ParsedContent> {
   const contentId = id
   // Handle ignored id
-  if (!contentIgnorePredicate(id)) {
+  if (!contentIgnorePredicate(id))
     return { _id: contentId, body: null }
-  }
 
   if (isPreview(event)) {
     const { key } = getPreview(event)
     const previewId = `preview:${key}:${id}`
     const draft = await sourceStorage.getItem(previewId)
-    if (draft) {
+    if (draft)
       id = previewId
-    }
   }
 
   const cached: any = await cacheParsedStorage.getItem(id)
-  if (isProduction && cached) {
+  if (isProduction && cached)
     return cached.parsed
-  }
 
   const meta = await sourceStorage.getMeta(id)
   const mtime = meta.mtime
@@ -181,20 +174,18 @@ export const getContent = async (event: H3Event, id: string): Promise<ParsedCont
     size,
     // Add Content version to the hash, to revalidate the cache on content update
     version: contentConfig.cacheVersion,
-    integrity: contentConfig.cacheIntegrity
+    integrity: contentConfig.cacheIntegrity,
   })
-  if (cached?.hash === hash) {
+  if (cached?.hash === hash)
     return cached.parsed as ParsedContent
-  }
 
   if (!pendingPromises[id + hash]) {
     // eslint-disable-next-line no-async-promise-executor
     pendingPromises[id + hash] = new Promise(async (resolve) => {
       const body = await sourceStorage.getItem(id)
 
-      if (body === null) {
+      if (body === null)
         return resolve({ _id: contentId, body: null } as unknown as ParsedContent)
-      }
 
       const parsed = await parseContent(contentId, body) as ParsedContent
 
@@ -212,14 +203,14 @@ export const getContent = async (event: H3Event, id: string): Promise<ParsedCont
 /**
  * Parse content file using registered plugins
  */
-export const parseContent = async (id: string, content: StorageValue, opts: ParseContentOptions = {}) => {
+export async function parseContent(id: string, content: StorageValue, opts: ParseContentOptions = {}) {
   const nitroApp = useNitroApp()
   const options = defu(
     opts,
     {
       markdown: {
         ...contentConfig.markdown,
-        highlight: contentConfig.highlight
+        highlight: contentConfig.highlight,
       },
       csv: contentConfig.csv,
       yaml: contentConfig.yaml,
@@ -227,9 +218,9 @@ export const parseContent = async (id: string, content: StorageValue, opts: Pars
       pathMeta: {
         defaultLocale: contentConfig.defaultLocale,
         locales: contentConfig.locales,
-        respectPathCase: contentConfig.respectPathCase
-      }
-    }
+        respectPathCase: contentConfig.respectPathCase,
+      },
+    },
   )
 
   // Call hook before parsing the file
@@ -244,26 +235,27 @@ export const parseContent = async (id: string, content: StorageValue, opts: Pars
   return result
 }
 
-export const createServerQueryFetch = <T = ParsedContent>(event: H3Event) => (query: ContentQueryBuilder<T>) => {
-  return createPipelineFetcher<T>(() => getIndexedContentsList<T>(event, query))(query)
+export function createServerQueryFetch<T = ParsedContent>(event: H3Event) {
+  return (query: ContentQueryBuilder<T>) => {
+    return createPipelineFetcher<T>(() => getIndexedContentsList<T>(event, query))(query)
+  }
 }
 
 /**
  * Query contents
  */
-export function serverQueryContent<T = ParsedContent>(event: H3Event): ContentQueryBuilder<T>;
-export function serverQueryContent<T = ParsedContent>(event: H3Event, params?: ContentQueryBuilderParams): ContentQueryBuilder<T>;
-export function serverQueryContent<T = ParsedContent>(event: H3Event, query?: string, ...pathParts: string[]): ContentQueryBuilder<T>;
-export function serverQueryContent<T = ParsedContent> (event: H3Event, query?: string | ContentQueryBuilderParams, ...pathParts: string[]) {
+export function serverQueryContent<T = ParsedContent>(event: H3Event): ContentQueryBuilder<T>
+export function serverQueryContent<T = ParsedContent>(event: H3Event, params?: ContentQueryBuilderParams): ContentQueryBuilder<T>
+export function serverQueryContent<T = ParsedContent>(event: H3Event, query?: string, ...pathParts: string[]): ContentQueryBuilder<T>
+export function serverQueryContent<T = ParsedContent>(event: H3Event, query?: string | ContentQueryBuilderParams, ...pathParts: string[]) {
   const { advanceQuery } = useRuntimeConfig().public.content.experimental
   const queryBuilder = advanceQuery
     ? createQuery<T>(createServerQueryFetch(event), { initialParams: typeof query !== 'string' ? query || {} : {}, legacy: false })
     : createQuery<T>(createServerQueryFetch(event), { initialParams: typeof query !== 'string' ? query || {} : {}, legacy: true })
   let path: string
 
-  if (typeof query === 'string') {
+  if (typeof query === 'string')
     path = withLeadingSlash(joinURL(query, ...pathParts))
-  }
 
   const originalParamsFn = queryBuilder.params
   queryBuilder.params = () => {
@@ -276,15 +268,15 @@ export function serverQueryContent<T = ParsedContent> (event: H3Event, query?: s
       // If query contains `path` and does not contain any `where` condition
       // Then can use `path` as `where` condition to find exact match
         params.where.push({ _path: withoutTrailingSlash(path) })
-      } else {
+      }
+      else {
         params.where.push({ _path: new RegExp(`^${path.replace(/[-[\]{}()*+.,^$\s/]/g, '\\$&')}`) })
       }
     }
 
     // Provide default sort order
-    if (!params.sort?.length) {
+    if (!params.sort?.length)
       params.sort = [{ _file: 1, $numeric: true }]
-    }
 
     // Filter by locale if:
     // - locales are defined

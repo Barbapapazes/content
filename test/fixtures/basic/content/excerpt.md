@@ -1,6 +1,5 @@
 # Index
 
-
 Excerpt paragraph
 
 <!-- more -->

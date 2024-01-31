@@ -91,7 +91,7 @@ export default defineContentPlugin({
   name: 'plugin-name',
   extensions: ['.md'],
   parse: async (id, content) => {},
-  transform: async content => {}
+  transform: async (content) => {}
 })
 ```
 

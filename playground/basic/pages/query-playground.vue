@@ -1,15 +1,15 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'default',
+  layoutTransition: false,
+})
+</script>
+
 <template>
   <div class="page">
     <ContentDoc />
   </div>
 </template>
-
-<script setup lang="ts">
-definePageMeta({
-  layout: 'default',
-  layoutTransition: false
-})
-</script>
 
 <style>
 .page {

@@ -1,4 +1,4 @@
-import { fileURLToPath } from 'url'
+import { fileURLToPath } from 'node:url'
 import { resolve } from 'pathe'
 import contentModule from '../../src/module'
 
@@ -11,33 +11,33 @@ export default defineNuxtConfig({
       link: [
         {
           rel: 'stylesheet',
-          href: 'https://unpkg.com/@picocss/pico@latest/css/pico.min.css'
-        }
-      ]
-    }
+          href: 'https://unpkg.com/@picocss/pico@latest/css/pico.min.css',
+        },
+      ],
+    },
   },
   components: [
     {
       global: true,
-      path: resolveThemeDir('./components')
+      path: resolveThemeDir('./components'),
     },
     {
       global: true,
-      path: resolveThemeDir('./components/content')
-    }
+      path: resolveThemeDir('./components/content'),
+    },
   ],
   modules: [
-    // @ts-ignore
+    // @ts-expect-error
     contentModule,
-    '@nuxthq/studio'
+    '@nuxthq/studio',
   ],
   content: {
     navigation: {
-      fields: ['icon']
+      fields: ['icon'],
     },
     highlight: {
       theme: 'material-theme-palenight',
-      preload: ['json', 'js', 'ts', 'html', 'css', 'vue']
-    }
-  }
+      preload: ['json', 'js', 'ts', 'html', 'css', 'vue'],
+    },
+  },
 })

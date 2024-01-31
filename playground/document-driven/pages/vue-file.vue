@@ -1,8 +1,8 @@
 <script setup>
 definePageMeta({
   documentDriven: {
-    surround: false
-  }
+    surround: false,
+  },
 })
 
 const { page } = useContent()

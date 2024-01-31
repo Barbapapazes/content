@@ -1,15 +1,15 @@
-import { describe, test, expect, assert } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { $fetch } from '@nuxt/test-utils'
 
-export const testYamlParser = () => {
+export function testYamlParser() {
   describe('Parser (.yml)', () => {
     test('key:value', async () => {
       const parsed = await $fetch('/api/parse', {
         method: 'POST',
         body: {
           id: 'content:index.yml',
-          content: 'key: value'
-        }
+          content: 'key: value',
+        },
       })
 
       expect(parsed).toHaveProperty('_id')
@@ -23,8 +23,8 @@ export const testYamlParser = () => {
         method: 'POST',
         body: {
           id: 'content:index.yml',
-          content: '- item 1 \n- item 2'
-        }
+          content: '- item 1 \n- item 2',
+        },
       })
 
       expect(parsed).toHaveProperty('_id')

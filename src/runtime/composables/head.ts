@@ -3,18 +3,16 @@ import type { HeadObjectPlain } from '@vueuse/head'
 import type { Ref } from 'vue'
 import { hasProtocol, joinURL, withTrailingSlash, withoutTrailingSlash } from 'ufo'
 import type { ParsedContent } from '../types'
-import { useRoute, nextTick, useHead, unref, watch, useRuntimeConfig } from '#imports'
+import { nextTick, unref, useHead, useRoute, useRuntimeConfig, watch } from '#imports'
 
-export const useContentHead = (
-  _content: ParsedContent | Ref<ParsedContent>,
-  to: RouteLocationNormalized | RouteLocationNormalizedLoaded = useRoute()
-) => {
+export function useContentHead(_content: ParsedContent | Ref<ParsedContent>, to: RouteLocationNormalized | RouteLocationNormalizedLoaded = useRoute()) {
   const content = unref(_content)
   const config = useRuntimeConfig()
 
   const refreshHead = (data: ParsedContent = content) => {
     // Don't call this function if no route is yet available
-    if (!to.path || !data) { return }
+    if (!to.path || !data)
+      return
 
     // Default head to `data?.head`
     const head: HeadObjectPlain = Object.assign({}, data?.head || {})
@@ -29,7 +27,7 @@ export const useContentHead = (
       if (process.server && !head.meta.some(m => m.property === 'og:title')) {
         head.meta.push({
           property: 'og:title',
-          content: title as string
+          content: title as string,
         })
       }
     }
@@ -48,37 +46,37 @@ export const useContentHead = (
       if (!head.meta.some(m => m.property === 'og:url')) {
         head.meta.push({
           property: 'og:url',
-          content: url
+          content: url,
         })
       }
       if (!head.link.some(m => m.rel === 'canonical')) {
         head.link.push({
           rel: 'canonical',
-          href: url
+          href: url,
         })
       }
     }
 
     // Grab description from `head.description` or fallback to `data.description`
-    // @ts-ignore - We expect `head.description` from Nuxt configurations...
+    // @ts-expect-error - We expect `head.description` from Nuxt configurations...
     const description = head?.description || data?.description
 
     // Shortcut for head.description
     if (description && head.meta.filter(m => m.name === 'description').length === 0) {
       head.meta.push({
         name: 'description',
-        content: description
+        content: description,
       })
     }
     if (process.server && description && !head.meta.some(m => m.property === 'og:description')) {
       head.meta.push({
         property: 'og:description',
-        content: description
+        content: description,
       })
     }
 
     // Grab description from `head` or fallback to `data.description`
-    // @ts-ignore - We expect `head.image` from Nuxt configurations...
+    // @ts-expect-error - We expect `head.image` from Nuxt configurations...
     const image = head?.image || data?.image
 
     // Shortcut for head.image to og:image in meta
@@ -87,8 +85,8 @@ export const useContentHead = (
       if (typeof image === 'string') {
         head.meta.push({
           property: 'og:image',
-          // @ts-ignore - We expect `head.image` from Nuxt configurations...
-          content: host && !hasProtocol(image) ? new URL(joinURL(config.app.baseURL, image), host).href : image
+          // @ts-expect-error - We expect `head.image` from Nuxt configurations...
+          content: host && !hasProtocol(image) ? new URL(joinURL(config.app.baseURL, image), host).href : image,
         })
       }
 
@@ -101,7 +99,7 @@ export const useContentHead = (
           'type',
           'width',
           'height',
-          'alt'
+          'alt',
         ]
 
         // Look on available keys
@@ -112,20 +110,23 @@ export const useContentHead = (
             const imageURL = isAbsoluteURL ? image.src : joinURL(config.app.baseURL, image.src ?? '/')
             head.meta.push({
               property: 'og:image',
-              content: host && !isAbsoluteURL ? new URL(imageURL, host).href : imageURL
+              content: host && !isAbsoluteURL ? new URL(imageURL, host).href : imageURL,
             })
-          } else if (image[key]) {
+          }
+          else if (image[key]) {
             head.meta.push({
               property: `og:image:${key}`,
-              content: image[key]
+              content: image[key],
             })
           }
         }
       }
     }
 
-    // @ts-ignore
-    if (process.client) { nextTick(() => useHead(head)) } else { useHead(head) }
+    // @ts-expect-error
+    if (process.client)
+      nextTick(() => useHead(head))
+    else useHead(head)
   }
 
   watch(() => unref(_content), refreshHead, { immediate: true })

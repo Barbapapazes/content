@@ -1,7 +1,7 @@
-import { describe, test, expect, assert } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { $fetch } from '@nuxt/test-utils'
 
-export const testMarkdownParserExcerpt = () => {
+export function testMarkdownParserExcerpt() {
   describe('Parser (.md excerpt)', () => {
     test('Index file', async () => {
       const parsed = await $fetch('/api/parse', {
@@ -14,9 +14,9 @@ export const testMarkdownParserExcerpt = () => {
             '',
             '<!--more-->',
             '',
-            'Second paragraph'
-          ].join('\n')
-        }
+            'Second paragraph',
+          ].join('\n'),
+        },
       })
 
       expect(parsed).toHaveProperty('_id')
@@ -67,9 +67,9 @@ export const testMarkdownParserExcerpt = () => {
             '# Index',
             'First paragraph',
             '',
-            'Second paragraph'
-          ].join('\n')
-        }
+            'Second paragraph',
+          ].join('\n'),
+        },
       })
 
       expect(parsed.excerpt).not.toBeDefined()

@@ -1,19 +1,3 @@
-<template>
-  <div>
-    <ContentRenderer :value="nullishDocument">
-      <template #empty>
-        Nullish Document!!!
-      </template>
-    </ContentRenderer>
-
-    <ContentRenderer :value="emptyChild">
-      <template #empty>
-        Empty Child!!!
-      </template>
-    </ContentRenderer>
-  </div>
-</template>
-
 <script setup>
 const nullishDocument = null
 
@@ -33,13 +17,29 @@ const emptyChild = {
       title: '',
       searchDepth: 2,
       depth: 2,
-      links: []
-    }
+      links: [],
+    },
   },
   _type: 'markdown',
   _id: 'content:_markdown.md',
   _source: 'content',
   _file: '_markdown.md',
-  _extension: 'md'
+  _extension: 'md',
 }
 </script>
+
+<template>
+  <div>
+    <ContentRenderer :value="nullishDocument">
+      <template #empty>
+        Nullish Document!!!
+      </template>
+    </ContentRenderer>
+
+    <ContentRenderer :value="emptyChild">
+      <template #empty>
+        Empty Child!!!
+      </template>
+    </ContentRenderer>
+  </div>
+</template>

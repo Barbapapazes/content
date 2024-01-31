@@ -4,7 +4,7 @@ import { withTrailingSlash } from 'ufo'
 import type { ParsedContent, QueryBuilderParams } from '../types'
 import ContentRenderer from './ContentRenderer.vue'
 import ContentQuery from './ContentQuery.vue'
-import { useRuntimeConfig, useRoute, useContentHead } from '#imports'
+import { useContentHead, useRoute, useRuntimeConfig } from '#imports'
 
 const ContentDoc = defineComponent({
   name: 'ContentDoc',
@@ -20,7 +20,7 @@ const ContentDoc = defineComponent({
     tag: {
       type: String,
       required: false,
-      default: 'div'
+      default: 'div',
     },
 
     /**
@@ -29,7 +29,7 @@ const ContentDoc = defineComponent({
      */
     excerpt: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     /**
@@ -43,7 +43,7 @@ const ContentDoc = defineComponent({
     path: {
       type: String,
       required: false,
-      default: undefined
+      default: undefined,
     },
 
     /**
@@ -52,7 +52,7 @@ const ContentDoc = defineComponent({
     query: {
       type: Object as PropType<QueryBuilderParams>,
       required: false,
-      default: undefined
+      default: undefined,
     },
 
     /**
@@ -61,8 +61,8 @@ const ContentDoc = defineComponent({
     head: {
       type: Boolean,
       required: false,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
 
   /**
@@ -73,7 +73,7 @@ const ContentDoc = defineComponent({
    * Document not found fallback
    * @slot not-found
    */
-  render (ctx: any) {
+  render(ctx: any) {
     const { contentHead } = useRuntimeConfig().public.content
 
     const slots = useSlots()
@@ -87,7 +87,7 @@ const ContentDoc = defineComponent({
     const contentQueryProps = {
       ...query || {},
       path: path || query?.path || withTrailingSlash(useRoute().path),
-      find: 'one'
+      find: 'one',
     }
 
     const emptyNode = (slot: string, data: any) => h('pre', null, JSON.stringify({ message: 'You should use slots with <ContentDoc>', slot, data }, null, 2))
@@ -97,29 +97,31 @@ const ContentDoc = defineComponent({
       contentQueryProps,
       {
         // Default slot
-        default: slots?.default
+        'default': slots?.default
           ? ({ data, refresh, isPartial }: any) => {
-              if (shouldInjectContentHead) { useContentHead(data) }
+              if (shouldInjectContentHead)
+                useContentHead(data)
 
               return slots.default?.({ doc: data, refresh, isPartial, excerpt, ...this.$attrs })
             }
           : ({ data }: any) => {
-              if (shouldInjectContentHead) { useContentHead(data) }
+              if (shouldInjectContentHead)
+                useContentHead(data)
 
               return h(
                 ContentRenderer,
                 { value: data, excerpt, tag, ...this.$attrs },
                 // Forward local `empty` slots to ContentRenderer if it is used.
-                { empty: (bindings: any) => slots?.empty ? slots.empty(bindings) : emptyNode('default', data) }
+                { empty: (bindings: any) => slots?.empty ? slots.empty(bindings) : emptyNode('default', data) },
               )
             },
         // Empty slot
-        empty: (bindings: any) => slots?.empty?.(bindings) || h('p', null, 'Document is empty, overwrite this content with #empty slot in <ContentDoc>.'),
+        'empty': (bindings: any) => slots?.empty?.(bindings) || h('p', null, 'Document is empty, overwrite this content with #empty slot in <ContentDoc>.'),
         // Not Found slot
-        'not-found': (bindings: any) => slots?.['not-found']?.(bindings) || h('p', null, 'Document not found, overwrite this content with #not-found slot in <ContentDoc>.')
-      }
+        'not-found': (bindings: any) => slots?.['not-found']?.(bindings) || h('p', null, 'Document not found, overwrite this content with #not-found slot in <ContentDoc>.'),
+      },
     )
-  }
+  },
 })
 
 export default ContentDoc as typeof ContentDoc & {

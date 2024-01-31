@@ -1,10 +1,10 @@
 import { joinURL } from 'ufo'
 import type { ContentQueryFindResponse, ContentQueryResponse } from '../../types/api'
 import type { ContentQueryBuilder, ContentQueryBuilderParams } from '../../types/query'
-import { apply, ensureArray, sortList, withoutKeys, withKeys, omit } from './utils'
+import { apply, ensureArray, omit, sortList, withKeys, withoutKeys } from './utils'
 import { createMatch } from '.'
 
-export function createPipelineFetcher<T> (getContentsList: () => Promise<T[]>) {
+export function createPipelineFetcher<T>(getContentsList: () => Promise<T[]>) {
   // Create Matcher
   const match = createMatch()
 
@@ -32,23 +32,23 @@ export function createPipelineFetcher<T> (getContentsList: () => Promise<T[]>) {
       return {
         ...state,
         result: filtered,
-        total: filtered.length
+        total: filtered.length,
       }
     },
     // Sort data
     (state, params) => ensureArray(params.sort).forEach(options => sortList(state.result, options!)),
-    function fetchSurround (state, params, db) {
+    function fetchSurround(state, params, db) {
       if (params.surround) {
         let _surround = surround(state.result?.length === 1 ? db : state.result, params.surround)
 
         _surround = apply(withoutKeys(params.without))(_surround)
         _surround = apply(withKeys(params.only))(_surround)
 
-        // @ts-ignore
+        // @ts-expect-error
         state.surround = _surround
       }
       return state
-    }
+    },
   ]
 
   const transformingPiples: Array<ContentQueryPipe<T>> = [
@@ -58,7 +58,7 @@ export function createPipelineFetcher<T> (getContentsList: () => Promise<T[]>) {
         return {
           ...state,
           result: state.result.slice(params.skip),
-          skip: params.skip
+          skip: params.skip,
         }
       }
     },
@@ -68,17 +68,17 @@ export function createPipelineFetcher<T> (getContentsList: () => Promise<T[]>) {
         return {
           ...state,
           result: state.result.slice(0, params.limit),
-          limit: params.limit
+          limit: params.limit,
         }
       }
     },
-    function fetchDirConfig (state, params, db) {
+    function fetchDirConfig(state, params, db) {
       if (params.dirConfig) {
         const path = (state.result[0] as any)?._path || params.where?.find(w => w._path)?._path as (string | RegExp)
         if (typeof path === 'string') {
           const dirConfig = db.find((item: any) => item._path === joinURL(path, '_dir'))
           if (dirConfig) {
-            // @ts-ignore
+            // @ts-expect-error
             state.dirConfig = { _path: dirConfig._path, ...withoutKeys(['_'])(dirConfig) }
           }
         }
@@ -88,13 +88,13 @@ export function createPipelineFetcher<T> (getContentsList: () => Promise<T[]>) {
     // Remove unwanted fields
     (state, params) => ({
       ...state,
-      result: apply(withoutKeys(params.without))(state.result)
+      result: apply(withoutKeys(params.without))(state.result),
     }),
     // Select only wanted fields
     (state, params) => ({
       ...state,
-      result: apply(withKeys(params.only))(state.result)
-    })
+      result: apply(withKeys(params.only))(state.result),
+    }),
   ]
 
   return async (query: ContentQueryBuilder<T>): Promise<ContentQueryResponse<T>> => {
@@ -106,7 +106,7 @@ export function createPipelineFetcher<T> (getContentsList: () => Promise<T[]>) {
       result: db,
       limit: 0,
       skip: 0,
-      total: db.length
+      total: db.length,
     }
 
     const matchedData = matchingPipelines.reduce(($data, pipe) => pipe($data, params, db) || $data, result1)
@@ -114,7 +114,7 @@ export function createPipelineFetcher<T> (getContentsList: () => Promise<T[]>) {
     // return count if query is for count
     if (params.count) {
       return {
-        result: matchedData.result.length
+        result: matchedData.result.length,
       }
     }
 
@@ -124,7 +124,7 @@ export function createPipelineFetcher<T> (getContentsList: () => Promise<T[]>) {
     if (params.first) {
       return {
         ...omit(['skip', 'limit', 'total'])(result),
-        result: result.result[0]
+        result: result.result[0],
       }
     }
 

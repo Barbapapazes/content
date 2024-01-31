@@ -1,3 +1,11 @@
+<script setup lang="ts">
+import { useContent, useTheme } from '#imports'
+
+const { globals, surround, page, navigation } = useContent()
+
+const theme = useTheme()
+</script>
+
 <template>
   <div>
     <h3 style="margin: 0 !important;">
@@ -26,11 +34,3 @@
     <pre style="padding: 1rem; border-radius: 16px;">{{ theme }}</pre>
   </div>
 </template>
-
-<script setup lang="ts">
-import { useContent, useTheme } from '#imports'
-
-const { globals, surround, page, navigation } = useContent()
-
-const theme = useTheme()
-</script>

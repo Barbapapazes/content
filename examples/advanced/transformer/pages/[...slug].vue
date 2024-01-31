@@ -1,3 +1,10 @@
+<script setup lang="ts">
+definePageMeta({
+  layout: 'default',
+  layoutTransition: false,
+})
+</script>
+
 <template>
   <div class="content-page">
     <ContentDoc v-slot="{ doc }">
@@ -7,13 +14,6 @@
     </ContentDoc>
   </div>
 </template>
-
-<script setup lang="ts">
-definePageMeta({
-  layout: 'default',
-  layoutTransition: false
-})
-</script>
 
 <style>
 .content-page {

@@ -1,7 +1,7 @@
-import { describe, expect, test } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { createMatch } from '../../../src/runtime/query/match'
 
-describe('Match', () => {
+describe('match', () => {
   const match = createMatch()
 
   const item = {
@@ -10,11 +10,11 @@ describe('Match', () => {
     to: 'a',
     live: true,
     category: 'c1',
-    nested: { users: ['Mahatma', 'Steve', 'Woodrow'] }
+    nested: { users: ['Mahatma', 'Steve', 'Woodrow'] },
   }
 
-  describe('String contains', () => {
-    test('$contains string', () => {
+  describe('string contains', () => {
+    it('$contains string', () => {
       expect(match(item, { name: { $contains: 'a' } })).toBe(true)
       expect(match(item, { 'nested.users.0': { $contains: 'Maha' } })).toBe(true)
 
@@ -29,14 +29,14 @@ describe('Match', () => {
       expect(match({ values: [0, false, ''] }, { values: { $contains: false } })).toBe(true)
     })
 
-    test('$icontains string', () => {
+    it('$icontains string', () => {
       expect(match(item, { 'nested.users.1': { $icontains: 'steve' } })).toBe(true)
       expect(match(item, { 'nested.users.2': { $icontains: 'WOODROW' } })).toBe(true)
     })
   })
 
-  describe('Array contains', () => {
-    test('$contains array', () => {
+  describe('array contains', () => {
+    it('$contains array', () => {
       expect(match(item, { 'nested.users': { $contains: 'Steve' } })).toBe(true)
       expect(match(item, { 'nested.users': { $contains: 'Woodrow' } })).toBe(true)
       expect(match(item, { 'nested.users': { $contains: ['Woodrow', 'Steve'] } })).toBe(true)
@@ -49,7 +49,7 @@ describe('Match', () => {
       expect(match(item, { 'nested.users': { $contains: undefined } })).toBe(true)
     })
 
-    test('$containsAny', () => {
+    it('$containsAny', () => {
       expect(match(item, { 'nested.users': { $containsAny: ['Steve', 'Woodrow'] } })).toBe(true)
       expect(match(item, { 'nested.users': { $containsAny: ['Steve', 'Woodrow', 'Mahatma'] } })).toBe(true)
       expect(match(item, { 'nested.users': { $containsAny: ['Steve', 'Woodrow', 'Mahatma', 'John'] } })).toBe(true)
@@ -58,8 +58,8 @@ describe('Match', () => {
     })
   })
 
-  describe('Types and existence', () => {
-    test('$exists', () => {
+  describe('types and existence', () => {
+    it('$exists', () => {
       expect(match(item, { name: { $exists: true } })).toBe(true)
       expect(match(item, { title: { $exists: true } })).toBe(false)
       expect(match(item, { title: { $exists: false } })).toBe(true)
@@ -70,7 +70,7 @@ describe('Match', () => {
       expect(match(item, { 'nested.users.4': { $exists: true } })).toBe(false)
     })
 
-    test('$type', () => {
+    it('$type', () => {
       expect(match(item, { name: { $type: 'string' } })).toBe(true)
       expect(match(item, { name: { $type: 'number' } })).toBe(false)
 
@@ -83,7 +83,7 @@ describe('Match', () => {
     })
   })
 
-  test('$eq', () => {
+  it('$eq', () => {
     // string
     expect(match(item, { name: { $eq: 'a' } })).toBe(true)
     expect(match(item, { name: { $eq: 'A' } })).toBe(false)
@@ -97,7 +97,7 @@ describe('Match', () => {
     expect(match(item, { live: { $eq: 'true' } })).toBe(false)
   })
 
-  test('$ne', () => {
+  it('$ne', () => {
     // string
     expect(match(item, { name: { $ne: 'a' } })).toBe(false)
     expect(match(item, { name: { $ne: 'A' } })).toBe(true)
@@ -111,43 +111,43 @@ describe('Match', () => {
     expect(match(item, { live: { $ne: true } })).toBe(false)
   })
 
-  describe('Logical operators', () => {
-    test('$not', () => {
+  describe('logical operators', () => {
+    it('$not', () => {
       // string
       expect(match(item, { $not: { live: true } })).toBe(false)
       expect(match(item, { live: { $not: true } })).toBe(false)
       expect(match(item, { live: { $not: { $eq: true } } })).toBe(false)
     })
 
-    test('$and', () => {
+    it('$and', () => {
       expect(
         match(item, {
-          $and: [{ name: 'a' }, { live: true }]
-        })
+          $and: [{ name: 'a' }, { live: true }],
+        }),
       ).toBe(true)
 
       expect(
         match(item, {
-          $and: [{ name: 'a' }, { live: false }]
-        })
+          $and: [{ name: 'a' }, { live: false }],
+        }),
       ).toBe(false)
     })
 
-    test('$or', () => {
+    it('$or', () => {
       expect(
         match(item, {
-          $or: [{ name: 'a' }, { live: true }]
-        })
+          $or: [{ name: 'a' }, { live: true }],
+        }),
       ).toBe(true)
 
       expect(
         match(item, {
-          $or: [{ name: 'a' }, { live: false }]
-        })
+          $or: [{ name: 'a' }, { live: false }],
+        }),
       ).toBe(true)
     })
 
-    test('$regex', () => {
+    it('$regex', () => {
       // case sensitive
       expect(match(item, { 'nested.users.0': /maha/ })).toBe(false)
       expect(match(item, { 'nested.users.0': { $regex: '/maha/' } })).toBe(false)
@@ -164,30 +164,30 @@ describe('Match', () => {
     })
   })
 
-  describe('Numerical operators', () => {
-    test('$gt', () => {
+  describe('numerical operators', () => {
+    it('$gt', () => {
       expect(match(item, { id: { $gt: 0 } })).toBe(true)
       expect(match(item, { id: { $gt: 1 } })).toBe(false)
     })
 
-    test('$gte', () => {
+    it('$gte', () => {
       expect(match(item, { id: { $gte: 1 } })).toBe(true)
       expect(match(item, { id: { $gte: 2 } })).toBe(false)
     })
 
-    test('$lt', () => {
+    it('$lt', () => {
       expect(match(item, { id: { $lt: 2 } })).toBe(true)
       expect(match(item, { id: { $lt: 1 } })).toBe(false)
     })
 
-    test('$lte', () => {
+    it('$lte', () => {
       expect(match(item, { id: { $lte: 1 } })).toBe(true)
       expect(match(item, { id: { $lte: 0 } })).toBe(false)
     })
   })
 
   describe('$in ', () => {
-    test('string filed', () => {
+    it('string filed', () => {
       const item = { id: 1, name: 'a', to: 'a', category: 'c1', nested: { users: ['Mahatma', 'Steve', 'Woodrow'] } }
 
       expect(match(item, { name: { $in: ['a', 'b'] } })).toBe(true)
@@ -198,27 +198,27 @@ describe('Match', () => {
       expect(match(item, { id: { $in: [1, 2] } })).toBe(true)
     })
 
-    test('array field', () => {
+    it('array field', () => {
       const data = [
         {
           name: 'post1',
-          tags: ['school', 'office']
+          tags: ['school', 'office'],
         },
         {
           name: 'post2',
-          tags: ['school', 'home']
+          tags: ['school', 'home'],
         },
         {
           item: 'Maps',
-          tags: ['office', 'storage']
-        }
+          tags: ['office', 'storage'],
+        },
       ]
 
       const condition = { tags: { $in: ['school', 'home'] } }
       data.forEach((item) => {
         expect(match(item, condition)).toBe(
-          item.tags.includes(condition.tags.$in[0]) ||
-          item.tags.includes(condition.tags.$in[1])
+          item.tags.includes(condition.tags.$in[0])
+          || item.tags.includes(condition.tags.$in[1]),
         )
       })
     })

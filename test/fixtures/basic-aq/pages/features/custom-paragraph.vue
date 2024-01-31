@@ -1,3 +1,3 @@
 <template>
-  <ContentDoc :path="'/'" :components="{ p: 'CustomProseP' }" />
+  <ContentDoc path="/" :components="{ p: 'CustomProseP' }" />
 </template>

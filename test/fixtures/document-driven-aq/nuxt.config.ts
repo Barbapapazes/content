@@ -4,17 +4,17 @@ export default defineNuxtConfig({
   modules: [contentModule],
   content: {
     experimental: {
-      advanceQuery: true
+      advanceQuery: true,
     },
     documentDriven: {
       globals: {
         theme: {
           where: {
-            _id: 'content:_theme.yml'
+            _id: 'content:_theme.yml',
           },
-          without: ['_']
-        }
-      }
-    }
-  }
+          without: ['_'],
+        },
+      },
+    },
+  },
 })

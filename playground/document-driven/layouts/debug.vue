@@ -1,6 +1,7 @@
 <script setup>
 const { layout } = useContent()
 </script>
+
 <template>
   <div>
     <PageNav />

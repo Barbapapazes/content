@@ -19,8 +19,8 @@ Query server exposes one API:
       limit: 0,
       sort: [],
       where: [],
-      only:[],
-      without:[]
+      only: [],
+      without: []
     },
   })
   // returns an array
@@ -59,16 +59,15 @@ import { defineQueryPlugin } from '#imports'
 export default defineQueryPlugin({
   name: 'version',
   queries: {
-    version: params => {
-      return v => {
+    version: (params) => {
+      return (v) => {
         params.version = v
       }
     }
   },
   execute: (data, params) => {
-    if (params.version) {
+    if (params.version)
       return data.filter(v => v.version === params.version)
-    }
   }
 })
 ```

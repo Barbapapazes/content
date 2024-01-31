@@ -1,6 +1,6 @@
 <script lang="ts">
 import ContentSlot from './ContentSlot.vue'
-import { defineComponent, getCurrentInstance, useSlots, computed } from '#imports'
+import { computed, defineComponent, getCurrentInstance, useSlots } from '#imports'
 
 let showDeprecatedMessage = true
 
@@ -10,9 +10,8 @@ let showDeprecatedMessage = true
 export default defineComponent({
   name: 'Markdown',
   extends: ContentSlot,
-  setup (props) {
+  setup(props) {
     if (process.dev && showDeprecatedMessage) {
-      // eslint-disable-next-line no-console
       console.warn('[deprecation] <Markdown> component is deprecated. Please use <ContentSlot> instead.')
       showDeprecatedMessage = false
     }
@@ -20,7 +19,8 @@ export default defineComponent({
     const { between, default: fallbackSlot } = useSlots()
 
     const tags = computed(() => {
-      if (typeof props.unwrap === 'string') { return props.unwrap.split(' ') }
+      if (typeof props.unwrap === 'string')
+        return props.unwrap.split(' ')
       return ['*']
     })
 
@@ -28,8 +28,8 @@ export default defineComponent({
       fallbackSlot,
       tags,
       between,
-      parent
+      parent,
     }
-  }
+  },
 })
 </script>

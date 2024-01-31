@@ -1,3 +1,20 @@
+<script setup lang="ts">
+defineProps({
+  a: {
+    type: String,
+    default: 'EMPTY',
+  },
+  b: {
+    type: String,
+    default: 'EMPTY',
+  },
+  c: {
+    type: String,
+    default: 'EMPTY',
+  },
+})
+</script>
+
 <template>
   <div>
     <div class="prop-a">
@@ -11,20 +28,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-defineProps({
-  a: {
-    type: String,
-    default: 'EMPTY'
-  },
-  b: {
-    type: String,
-    default: 'EMPTY'
-  },
-  c: {
-    type: String,
-    default: 'EMPTY'
-  }
-})
-</script>

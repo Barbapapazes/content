@@ -1,6 +1,8 @@
-import { unwrap, flatUnwrap } from '@nuxtjs/mdc/dist/runtime/utils/node'
+import { flatUnwrap, unwrap } from '@nuxtjs/mdc/dist/runtime/utils/node'
 
-export const useUnwrap = () => ({
-  unwrap,
-  flatUnwrap
-})
+export function useUnwrap() {
+  return {
+    unwrap,
+    flatUnwrap,
+  }
+}

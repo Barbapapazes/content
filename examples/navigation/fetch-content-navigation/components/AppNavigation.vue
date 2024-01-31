@@ -2,8 +2,8 @@
 defineProps({
   navigationTree: {
     type: Array,
-    default: () => []
-  }
+    default: () => [],
+  },
 })
 </script>
 

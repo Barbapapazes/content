@@ -2,10 +2,10 @@ import contentModule from '../../src/module'
 
 export default defineNuxtConfig({
   modules: [
-    // @ts-ignore
-    contentModule
+    // @ts-expect-error
+    contentModule,
   ],
   content: {
-    documentDriven: true
-  }
+    documentDriven: true,
+  },
 })

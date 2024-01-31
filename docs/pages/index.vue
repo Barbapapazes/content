@@ -1,6 +1,6 @@
 <script setup lang="ts">
 definePageMeta({
-  colorMode: 'dark'
+  colorMode: 'dark',
 })
 
 const videoModalOpen = ref(false)
@@ -13,13 +13,13 @@ useSeoMeta({
   description,
   ogDescription: description,
   ogImage: 'https://content.nuxt.com/social-card.png',
-  twitterImage: 'https://content.nuxt.com/social-card.png'
+  twitterImage: 'https://content.nuxt.com/social-card.png',
 })
 
 const { data } = await useAsyncData('landing', () => {
   return Promise.all([
     queryContent('/_partials/get-started').findOne(),
-    queryContent('/').findOne()
+    queryContent('/').findOne(),
   ])
 })
 
@@ -34,7 +34,7 @@ const { data: module } = await useFetch<{
     username: string
   }[]
 }>('https://api.nuxt.com/modules/content', {
-  transform: ({ stats, contributors }) => ({ stats, contributors })
+  transform: ({ stats, contributors }) => ({ stats, contributors }),
 })
 const { format: formatNumber } = Intl.NumberFormat('en-GB', { notation: 'compact' })
 </script>

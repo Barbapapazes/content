@@ -1,12 +1,12 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { makeIgnored } from '../../src/runtime/utils/config'
 
-function run (pattern: string, key: string, result: boolean) {
+function run(pattern: string, key: string, result: boolean) {
   const isIgnored = makeIgnored([pattern])
   expect(isIgnored(key)).toBe(result)
 }
 
-export const testIgnores = () => {
+export function testIgnores() {
   describe('Ignores Options', () => {
     test('ignore any file or folder that contains the word "hidden"', () => {
       const key = 'source:content:my-hidden-folder:index.md'

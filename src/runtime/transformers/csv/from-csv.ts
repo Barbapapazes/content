@@ -3,13 +3,13 @@
 // Based on mdast-util-from-markdown
 // See: https://github.com/syntax-tree/mdast-util-from-markdown/blob/03581b3ede92d3874a6689a96b8ae0a7c17b86af/dev/lib/index.js
 import { toString } from 'mdast-util-to-string'
-import { preprocess, postprocess } from 'micromark'
+import { postprocess, preprocess } from 'micromark'
 import { stringifyPosition } from 'unist-util-stringify-position'
-import { Token, Event, Point as MPoint } from 'micromark-util-types'
+import type { Event, Point as MPoint, Token } from 'micromark-util-types'
 import { parse } from './parser'
 
 type Point = Omit<MPoint, '_index' | '_bufferIndex'>
-type Node = {
+interface Node {
   type: string
   children: Array<Node>
   position?: {
@@ -24,7 +24,7 @@ const own = {}.hasOwnProperty
 const initialPoint: Point = {
   line: 1,
   column: 1,
-  offset: 0
+  offset: 0,
 }
 
 export const fromCSV = function (value, encoding?, options?) {
@@ -35,33 +35,33 @@ export const fromCSV = function (value, encoding?, options?) {
 
   return compiler()(
     postprocess(
-      parse(options).write(preprocess()(value, encoding, true))
-    )
+      parse(options).write(preprocess()(value, encoding, true)),
+    ),
   )
 }
 
-function compiler () {
+function compiler() {
   const config = {
     enter: {
       column: opener(openColumn),
       row: opener(openRow),
       data: onenterdata,
-      quotedData: onenterdata
+      quotedData: onenterdata,
     },
     exit: {
       row: closer(),
       column: closer(),
       data: onexitdata,
-      quotedData: onexitQuotedData
-    }
+      quotedData: onexitQuotedData,
+    },
   }
 
   return compile
 
-  function compile (events: Array<Event>) {
+  function compile(events: Array<Event>) {
     const tree: Node = {
       type: 'root',
-      children: []
+      children: [],
     }
 
     const stack = [tree]
@@ -74,7 +74,7 @@ function compiler () {
       config,
       enter,
       exit,
-      resume
+      resume,
     }
 
     let index = -1
@@ -86,11 +86,11 @@ function compiler () {
         handler[events[index][1].type].call(
           Object.assign(
             {
-              sliceSerialize: events[index][2].sliceSerialize
+              sliceSerialize: events[index][2].sliceSerialize,
             },
-            context
+            context,
           ),
-          events[index][1]
+          events[index][1],
         )
       }
     }
@@ -103,73 +103,77 @@ function compiler () {
 
     tree.position = {
       start: point(
-        events.length > 0 ? events[0][1].start : initialPoint
+        events.length > 0 ? events[0][1].start : initialPoint,
       ),
       end: point(
-        events.length > 0 ? events[events.length - 2][1].end : initialPoint
-      )
+        events.length > 0 ? events[events.length - 2][1].end : initialPoint,
+      ),
     }
 
     return tree
   }
 
-  function point (d: Point): Point {
+  function point(d: Point): Point {
     return {
       line: d.line,
       column: d.column,
-      offset: d.offset
+      offset: d.offset,
     }
   }
 
-  function opener (create, and?) {
+  function opener(create, and?) {
     return open
 
-    function open (token: Token) {
+    function open(token: Token) {
       enter.call(this, create(token), token)
-      if (and) { and.call(this, token) }
+      if (and)
+        and.call(this, token)
     }
   }
 
-  function enter (node: Node, token: Token, errorHandler) {
+  function enter(node: Node, token: Token, errorHandler) {
     const parent = this.stack[this.stack.length - 1]
     parent.children.push(node)
     this.stack.push(node)
     this.tokenStack.push([token, errorHandler])
 
     node.position = {
-      start: point(token.start)
+      start: point(token.start),
     }
     return node
   }
 
-  function closer (and?) {
+  function closer(and?) {
     return close
 
-    function close (token: Token) {
-      if (and) { and.call(this, token) }
+    function close(token: Token) {
+      if (and)
+        and.call(this, token)
       exit.call(this, token)
     }
   }
 
-  function exit (token: Token, onExitError) {
+  function exit(token: Token, onExitError) {
     const node = this.stack.pop()
     const open = this.tokenStack.pop()
 
     if (!open) {
       throw new Error(
-        'Cannot close `' +
-           token.type +
-           '` (' +
+        `Cannot close \`${
+           token.type
+           }\` (${
            stringifyPosition({
              start: token.start,
-             end: token.end
-           }) +
-           '): it’s not open'
+             end: token.end,
+           })
+           }): it’s not open`,
       )
-    } else if (open[0].type !== token.type) {
+    }
+    else if (open[0].type !== token.type) {
       if (onExitError) {
         onExitError.call(this, token, open[0])
-      } else {
+      }
+      else {
         const handler = open[1] || defaultOnError
         handler.call(this, token, open[0])
       }
@@ -178,11 +182,11 @@ function compiler () {
     return node
   }
 
-  function resume () {
+  function resume() {
     return toString(this.stack.pop())
   }
 
-  function onenterdata (token: Token) {
+  function onenterdata(token: Token) {
     const parent = this.stack[this.stack.length - 1]
 
     let tail = parent.children[parent.children.length - 1]
@@ -192,7 +196,7 @@ function compiler () {
       tail = text()
 
       tail.position = {
-        start: point(token.start)
+        start: point(token.start),
       }
 
       parent.children.push(tail)
@@ -200,68 +204,69 @@ function compiler () {
     this.stack.push(tail)
   }
 
-  function onexitdata (token: Token) {
+  function onexitdata(token: Token) {
     const tail = this.stack.pop()
     tail.value += this.sliceSerialize(token).trim().replace(/""/g, '"')
     tail.position.end = point(token.end)
   }
-  function onexitQuotedData (token: Token) {
+  function onexitQuotedData(token: Token) {
     const tail = this.stack.pop()
     const value = this.sliceSerialize(token)
     tail.value += this.sliceSerialize(token).trim().substring(1, value.length - 1).replace(/""/g, '"')
     tail.position.end = point(token.end)
   }
 
-  function text () {
+  function text() {
     return {
       type: 'text',
-      value: ''
+      value: '',
     }
   }
 
-  function openColumn () {
+  function openColumn() {
     return {
       type: 'column',
-      children: []
+      children: [],
     }
   }
-  function openRow () {
+  function openRow() {
     return {
       type: 'row',
-      children: []
+      children: [],
     }
   }
 }
 
-function defaultOnError (left, right) {
+function defaultOnError(left, right) {
   if (left) {
     throw new Error(
-      'Cannot close `' +
-         left.type +
-         '` (' +
+      `Cannot close \`${
+         left.type
+         }\` (${
          stringifyPosition({
            start: left.start,
-           end: left.end
-         }) +
-         '): a different token (`' +
-         right.type +
-         '`, ' +
+           end: left.end,
+         })
+         }): a different token (\`${
+         right.type
+         }\`, ${
          stringifyPosition({
            start: right.start,
-           end: right.end
-         }) +
-         ') is open'
+           end: right.end,
+         })
+         }) is open`,
     )
-  } else {
+  }
+  else {
     throw new Error(
-      'Cannot close document, a token (`' +
-         right.type +
-         '`, ' +
+      `Cannot close document, a token (\`${
+         right.type
+         }\`, ${
          stringifyPosition({
            start: right.start,
-           end: right.end
-         }) +
-         ') is still open'
+           end: right.end,
+         })
+         }) is still open`,
     )
   }
 }

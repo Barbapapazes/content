@@ -2,22 +2,22 @@
 const props = defineProps({
   throttle: {
     type: Number,
-    default: 200
+    default: 200,
   },
   duration: {
     type: Number,
-    default: 2000
+    default: 2000,
   },
   height: {
     type: Number,
-    default: 3
-  }
+    default: 3,
+  },
 })
 // Options & Data
 const data = reactive({
   percent: 0,
   show: false,
-  canSucceed: true
+  canSucceed: true,
 })
 // Local variables
 let _timer = null
@@ -25,30 +25,29 @@ let _throttle = null
 let _cut
 
 // Functions
-const clear = () => {
+function clear() {
   _timer && clearInterval(_timer)
   _throttle && clearTimeout(_throttle)
   _timer = null
 }
-const start = () => {
+function start() {
   clear()
   data.percent = 0
   data.canSucceed = true
 
-  if (props.throttle) {
+  if (props.throttle)
     _throttle = setTimeout(startTimer, props.throttle)
-  } else {
+  else
     startTimer()
-  }
 }
-const increase = (num) => {
+function increase(num) {
   data.percent = Math.min(100, Math.floor(data.percent + num))
 }
-const finish = () => {
+function finish() {
   data.percent = 100
   hide()
 }
-const hide = () => {
+function hide() {
   clear()
   setTimeout(() => {
     data.show = false
@@ -57,7 +56,7 @@ const hide = () => {
     }, 400)
   }, 500)
 }
-const startTimer = () => {
+function startTimer() {
   data.show = true
   _cut = 10000 / Math.floor(props.duration)
   _timer = setInterval(() => {
@@ -81,11 +80,11 @@ onBeforeUnmount(() => clear)
       'nuxt-progress-failed': !data.canSucceed,
     }"
     :style="{
-      width: data.percent + '%',
+      width: `${data.percent}%`,
       left: data.left,
-      height: props.height + 'px',
+      height: `${props.height}px`,
       opacity: data.show ? 1 : 0,
-      backgroundSize: (100 / data.percent) * 100 + '% auto',
+      backgroundSize: `${(100 / data.percent) * 100}% auto`,
     }"
   />
 </template>

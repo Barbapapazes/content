@@ -1,6 +1,6 @@
-import { test, describe, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
-describe('Content slot transform', () => {
+describe('content slot transform', () => {
   const transform = (code: string) => {
     if (code.includes('ContentSlot')) {
       code = code.replace(/<ContentSlot(\s)+([^/>]*)(:use=['"](\$slots.)?([a-zA-Z0-9_-]*)['"])/g, '<MDCSlot$1$2name="$5"')
@@ -10,11 +10,11 @@ describe('Content slot transform', () => {
       code = code.replace(/ContentSlot\(([^(]*)(:use=['"](\$slots.)?([a-zA-Z0-9_-]*)['"]|use=['"]([a-zA-Z0-9_-]*)['"])([^)]*)/g, 'MDCSlot($1name="$4"$6')
       return {
         code,
-        map: { mappings: '' }
+        map: { mappings: '' },
       }
     }
   }
-  test('Self Closing', () => {
+  it('self Closing', () => {
     expect(transform('<ContentSlot :use="$slots.foo" />')?.code).toBe('<MDCSlot name="foo" />')
     expect(transform('<ContentSlot unwrap="p" :use="$slots.foo" />')?.code).toBe('<MDCSlot unwrap="p" name="foo" />')
     expect(transform('<ContentSlot :unwrap="[\'p\']" :use="$slots.foo" />')?.code).toBe('<MDCSlot :unwrap="[\'p\']" name="foo" />')
@@ -34,7 +34,7 @@ describe('Content slot transform', () => {
     expect(transform('<ContentSlot\n:use="$slots.foo"\nsome-pros="value"\n/>')?.code).toBe('<MDCSlot\nname="foo"\nsome-pros="value"\n/>')
   })
 
-  test('With Slot', () => {
+  it('with Slot', () => {
     expect(transform('<ContentSlot :use="$slots.foo"></ContentSlot>')?.code).toBe('<MDCSlot name="foo"></MDCSlot>')
     expect(transform('<ContentSlot unwrap="p" :use="$slots.foo"></ContentSlot>')?.code).toBe('<MDCSlot unwrap="p" name="foo"></MDCSlot>')
     expect(transform('<ContentSlot :unwrap="[\'p\']" :use="$slots.foo"></ContentSlot>')?.code).toBe('<MDCSlot :unwrap="[\'p\']" name="foo"></MDCSlot>')

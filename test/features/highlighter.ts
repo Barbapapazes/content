@@ -1,7 +1,7 @@
-import { describe, test, expect, assert } from 'vitest'
+import { assert, describe, expect, test } from 'vitest'
 import { $fetch } from '@nuxt/test-utils'
 
-export const testHighlighter = () => {
+export function testHighlighter() {
   describe('Highlighter', () => {
     test('themed', async () => {
       const parsed = await $fetch('/api/parse', {
@@ -11,23 +11,23 @@ export const testHighlighter = () => {
           content: [
             '```ts',
             'const a: number = 1',
-            '```'
+            '```',
           ].join('\n'),
           options: {
             markdown: {
               highlight: {
                 theme: {
                   dark: 'material-theme-palenight', // Theme containing italic
-                  default: 'github-light'
-                }
-              }
-            }
-          }
-        }
+                  default: 'github-light',
+                },
+              },
+            },
+          },
+        },
       })
       const colors = {
         default: '#D73A49 #005CC5 #D73A49 #005CC5 #D73A49 #005CC5'.split(' '),
-        dark: '#C792EA #BABED8 #89DDFF #FFCB6B #89DDFF #F78C6C'.split(' ')
+        dark: '#C792EA #BABED8 #89DDFF #FFCB6B #89DDFF #F78C6C'.split(' '),
       }
       expect(parsed).toHaveProperty('_id')
       assert(parsed._id === 'content:index.md')
@@ -40,7 +40,8 @@ export const testHighlighter = () => {
         if (token.props.style) {
           expect(token.props.style).includes(`--shiki-default:${colors.default[i]}`)
           expect(token.props.style).includes(`--shiki-dark:${colors.dark[i]}`)
-        } else {
+        }
+        else {
           expect(style).toContain(`.${token.props.class}`)
           expect(style).toContain(`.dark .${token.props.class}`)
         }
@@ -57,9 +58,9 @@ export const testHighlighter = () => {
             'const a: number = 1',
             '```',
             '<!--more-->',
-            'Second block'
-          ].join('\n')
-        }
+            'Second block',
+          ].join('\n'),
+        },
       })
 
       const styleExcerpt = parsed.excerpt.children.pop()

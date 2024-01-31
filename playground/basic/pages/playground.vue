@@ -1,17 +1,17 @@
-<template>
-  <div class="page">
-    <ContentDoc />
-  </div>
-</template>
-
 <script setup lang="ts">
 import { definePageMeta } from '#imports'
 
 definePageMeta({
   layout: 'default',
-  layoutTransition: false
+  layoutTransition: false,
 })
 </script>
+
+<template>
+  <div class="page">
+    <ContentDoc />
+  </div>
+</template>
 
 <style>
 .page {

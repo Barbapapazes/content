@@ -6,7 +6,7 @@
   { "id": 5, "name": "e", "_deleted": true, "to": "e", "category": "c3", "nested": { "users": ["Sergey"] } },
   { "id": 6, "name": "f", "_deleted": true, "to": "f", "category": "c3", "nested": { "users": ["Alexandre"] } },
   { "id": 7, "name": "g", "_deleted": true, "to": "g", "category": "c4", "nested": { "users": ["Daniel"] } },
-  
+
   { "text": "aab", "numberString": "1", "number": 1 },
   { "text": "aaB", "numberString": "2", "number": 2 },
   { "text": "aAb", "numberString": "3", "number": 3 },

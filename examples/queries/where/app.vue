@@ -14,7 +14,6 @@ const { data: notEqualQuery } = await useAsyncData('not-equal', () => {
 const { data: inQuery } = await useAsyncData('in', () => {
   return queryContent('/').where({ director: { $in: ['Hayao Miyazaki', 'Yoshifumi Kondō'] } }).find()
 })
-
 </script>
 
 <template>

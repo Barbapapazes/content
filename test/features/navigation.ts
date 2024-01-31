@@ -1,18 +1,18 @@
-import { describe, test, expect } from 'vitest'
+import { describe, expect, test } from 'vitest'
 import { $fetch, useTestContext } from '@nuxt/test-utils'
 import { hash } from 'ohash'
 import { jsonStringify } from '../../src/runtime/utils/json'
 
-export const testNavigation = () => {
-  // @ts-ignore
+export function testNavigation() {
+  // @ts-expect-error
   const apiBaseUrl = useTestContext().options.nuxtConfig.content?.api?.baseURL || '/api/_content'
   describe('Navigation', () => {
     test('Get navigation', async () => {
       const query = { where: [{ _locale: 'en' }] }
       const list = await $fetch(`${apiBaseUrl}/navigation/${hash(query)}`, {
         params: {
-          _params: jsonStringify(query)
-        }
+          _params: jsonStringify(query),
+        },
       })
 
       expect(list.find(item => item._path === '/')).toBeTruthy()
@@ -29,8 +29,8 @@ export const testNavigation = () => {
       const query = { where: [{ _path: /^\/cats/ }] }
       const list = await $fetch(`${apiBaseUrl}/navigation/${hash(query)}`, {
         params: {
-          _params: jsonStringify(query)
-        }
+          _params: jsonStringify(query),
+        },
       })
 
       expect(list).toMatchSnapshot('basic-navigation-cats')
@@ -40,8 +40,8 @@ export const testNavigation = () => {
       const query = { where: [{ _path: /^\/dogs/ }] }
       const list = await $fetch(`${apiBaseUrl}/navigation/${hash(query)}`, {
         params: {
-          _params: jsonStringify(query)
-        }
+          _params: jsonStringify(query),
+        },
       })
 
       expect(list).toMatchSnapshot('basic-navigation-dogs')
@@ -51,8 +51,8 @@ export const testNavigation = () => {
       const query = { where: [{ _path: /^\/test-navigation/ }] }
       const list = await $fetch(`${apiBaseUrl}/navigation/${hash(query)}`, {
         params: {
-          _params: jsonStringify(query)
-        }
+          _params: jsonStringify(query),
+        },
       })
 
       // page.md, index.md, /not-hidden-dir
@@ -69,8 +69,8 @@ export const testNavigation = () => {
       const query = { where: [{ _path: /^\/numbers/ }] }
       const list = await $fetch(`${apiBaseUrl}/navigation/${hash(query)}`, {
         params: {
-          _params: jsonStringify(query)
-        }
+          _params: jsonStringify(query),
+        },
       })
 
       expect(list[0]?.children).toBeDefined()
@@ -92,23 +92,23 @@ export const testNavigation = () => {
       /* These are local replicas of the queries made in `nav-with-query.vue` */
       const catsQuery = {
         where: {
-          _path: /^\/cats/
-        }
+          _path: /^\/cats/,
+        },
       }
       const numbersQuery = {
         where: {
-          _path: /^\/numbers/
-        }
+          _path: /^\/numbers/,
+        },
       }
       const dogsQuery = {
-        where: { _path: /^\/dogs/ }
+        where: { _path: /^\/dogs/ },
       }
 
       const queryNav = async (query) => {
         const list = await $fetch(`${apiBaseUrl}/navigation/${hash(query)}`, {
           params: {
-            _params: jsonStringify(query)
-          }
+            _params: jsonStringify(query),
+          },
         })
 
         return list
@@ -117,7 +117,7 @@ export const testNavigation = () => {
       const [catsData, numbersData, dogsData] = await Promise.all([
         queryNav(catsQuery),
         queryNav(numbersQuery),
-        queryNav(dogsQuery)
+        queryNav(dogsQuery),
       ])
 
       const html = await $fetch('/nav-with-query')

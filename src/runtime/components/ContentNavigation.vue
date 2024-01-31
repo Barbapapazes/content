@@ -1,8 +1,8 @@
 <script lang="ts">
-import { toRefs, defineComponent, h, useSlots, computed, type PropType, type VNode } from 'vue'
+import { type PropType, type VNode, computed, defineComponent, h, toRefs, useSlots } from 'vue'
 import { hash } from 'ohash'
-import type { NavItem, QueryBuilderParams, QueryBuilder } from '../types'
-import { useAsyncData, fetchContentNavigation, useState, useContent } from '#imports'
+import type { NavItem, QueryBuilder, QueryBuilderParams } from '../types'
+import { fetchContentNavigation, useAsyncData, useContent, useState } from '#imports'
 import { NuxtLink } from '#components'
 
 const ContentNavigation = defineComponent({
@@ -14,12 +14,12 @@ const ContentNavigation = defineComponent({
     query: {
       type: Object as PropType<QueryBuilderParams | QueryBuilder>,
       required: false,
-      default: undefined
-    }
+      default: undefined,
+    },
   },
-  async setup (props) {
+  async setup(props) {
     const {
-      query
+      query,
     } = toRefs(props)
 
     const queryBuilder = computed(() => {
@@ -27,9 +27,8 @@ const ContentNavigation = defineComponent({
        * We need to extract params from a possible QueryBuilder beforehand
        * so we don't end up with a duplicate useAsyncData key.
        */
-      if (typeof query.value?.params === 'function') {
+      if (typeof query.value?.params === 'function')
         return query.value.params()
-      }
 
       return query.value
     })
@@ -42,7 +41,7 @@ const ContentNavigation = defineComponent({
     }
     const { data: navigation } = await useAsyncData<NavItem[]>(
       `content-navigation-${hash(queryBuilder.value)}`,
-      () => fetchContentNavigation(queryBuilder.value)
+      () => fetchContentNavigation(queryBuilder.value),
     )
     return { navigation }
   },
@@ -51,7 +50,7 @@ const ContentNavigation = defineComponent({
    * Navigation empty fallback
    * @slot empty
    */
-  render (ctx: { navigation: NavItem[] }) {
+  render(ctx: { navigation: NavItem[] }) {
     const slots = useSlots()
 
     const { navigation } = ctx
@@ -61,11 +60,11 @@ const ContentNavigation = defineComponent({
         'ul',
         level ? { 'data-level': level } : null,
         data.map((link) => {
-          if (link.children) {
+          if (link.children)
             return h('li', null, [renderLink(link), renderLinks(link.children, level + 1)])
-          }
+
           return h('li', null, renderLink(link))
-        })
+        }),
       )
     const defaultNode = (data: NavItem[]) => renderLinks(data, 0)
 
@@ -73,7 +72,7 @@ const ContentNavigation = defineComponent({
     return slots?.default
       ? slots.default({ navigation, ...this.$attrs })
       : defaultNode(navigation)
-  }
+  },
 })
 
 export default ContentNavigation as typeof ContentNavigation & {
