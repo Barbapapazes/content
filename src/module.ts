@@ -203,23 +203,6 @@ export interface ModuleOptions {
    */
   contentHead?: boolean
   /**
-   * Document-driven mode config
-   *
-   * @default false
-   */
-  documentDriven: boolean | {
-    host?: string
-    page?: boolean
-    navigation?: boolean
-    surround?: boolean
-    globals?: {
-      [key: string]: QueryBuilderParams
-    }
-    layoutFallbacks?: string[]
-    injectPage?: boolean
-    trailingSlash?: boolean
-  },
-  /**
    * Enable to keep uppercase characters in the generated routes.
    *
    * @default false
@@ -347,7 +330,6 @@ export default defineNuxtModule<ModuleOptions>({
       fields: []
     },
     contentHead: true,
-    documentDriven: false,
     respectPathCase: false,
     experimental: {
       clientDB: false,
@@ -658,80 +640,6 @@ export default defineNuxtModule<ModuleOptions>({
       addImports({ name: 'navigationDisabled', as: 'fetchContentNavigation', from: resolveRuntimeModule('./composables/utils') })
     }
 
-    // Register document-driven
-    if (options.documentDriven) {
-      // Enable every feature by default
-      const defaultDocumentDrivenConfig = {
-        page: true,
-        navigation: true,
-        surround: true,
-        globals: {},
-        layoutFallbacks: ['theme'],
-        injectPage: true
-      }
-
-      // If set to true, use defaults else merge defaults with user config
-      if (options.documentDriven === true) {
-        options.documentDriven = defaultDocumentDrivenConfig
-      } else {
-        options.documentDriven = {
-          ...defaultDocumentDrivenConfig,
-          ...options.documentDriven
-        }
-      }
-
-      // Support layout field by default
-      if (options.navigation) {
-        options.navigation.fields.push('layout')
-      }
-
-      addImports([
-        { name: 'useContentState', as: 'useContentState', from: resolveRuntimeModule('./composables/content') },
-        { name: 'useContent', as: 'useContent', from: resolveRuntimeModule('./composables/content') }
-      ])
-
-      addPlugin(resolveRuntimeModule(
-        options.experimental.advanceQuery
-          ? './plugins/documentDriven'
-          : './legacy/plugins/documentDriven'
-      ))
-
-      if (options.documentDriven.injectPage) {
-        nuxt.options.pages = true
-
-        nuxt.hook('pages:extend', (pages) => {
-          // Respect user's custom catch-all page
-          if (!pages.find(page => page.path === '/:slug(.*)*')) {
-            pages.unshift({
-              name: 'slug',
-              path: '/:slug(.*)*',
-              file: resolveRuntimeModule('./pages/document-driven.vue'),
-              children: []
-            })
-          }
-        })
-        nuxt.hook('app:resolve', async (app) => {
-          if (app.mainComponent?.includes('@nuxt/ui-templates')) {
-            app.mainComponent = resolveRuntimeModule('./app.vue')
-          } else {
-            const appContent = await fs.promises.readFile(app.mainComponent!, { encoding: 'utf-8' })
-            if (appContent.includes('<NuxtLayout') || appContent.includes('<nuxt-layout')) {
-              logger.warn([
-                'Using `<NuxtLayout>` inside `app.vue` will cause unwanted layout shifting in your application.',
-                'Consider removing `<NuxtLayout>` from `app.vue` and using it in your pages.'
-              ].join(''))
-            }
-          }
-        })
-      }
-    } else {
-      // Noop useContent
-      addImports([
-        { name: 'useContentDisabled', as: 'useContentState', from: resolveRuntimeModule('./composables/utils') },
-        { name: 'useContentDisabled', as: 'useContent', from: resolveRuntimeModule('./composables/utils') }
-      ])
-    }
-
     // @ts-ignore
     await nuxt.callHook('content:context', contentContext)
 
@@ -793,10 +701,6 @@ export default defineNuxtModule<ModuleOptions>({
       // @deprecated
       highlight: options.highlight as any,
       wsUrl: '',
-      // Document-driven configuration
-      documentDriven: options.documentDriven as any,
-      host: typeof options.documentDriven !== 'boolean' ? options.documentDriven?.host ?? '' : '',
-      trailingSlash: typeof options.documentDriven !== 'boolean' ? options.documentDriven?.trailingSlash ?? false : false,
       search: options.experimental.search as any,
       contentHead: options.contentHead ?? true,
       // Anchor link generation config
@@ -988,8 +892,6 @@ interface ModulePublicRuntimeConfig {
   search: ModuleOptions['experimental']['search']
 
   contentHead: ModuleOptions['contentHead']
-
-  documentDriven: ModuleOptions['documentDriven']
 }
 
 interface ModulePrivateRuntimeConfig {

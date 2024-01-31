@@ -3,6 +3,9 @@ import contentModule from '../../src/module'
 
 export default defineNuxtConfig({
   extends: ['../shared'],
+  nitro: {
+    static: true
+  },
   content: {
     sources: {
       'translation-fa': {
