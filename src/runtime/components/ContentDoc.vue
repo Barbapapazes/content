@@ -4,7 +4,7 @@ import { withTrailingSlash } from 'ufo'
 import type { ParsedContent, QueryBuilderParams } from '../types'
 import ContentRenderer from './ContentRenderer.vue'
 import ContentQuery from './ContentQuery.vue'
-import { useContentHead, useRoute, useRuntimeConfig } from '#imports'
+import { useRoute } from '#imports'
 
 const ContentDoc = defineComponent({
   name: 'ContentDoc',
@@ -74,14 +74,9 @@ const ContentDoc = defineComponent({
    * @slot not-found
    */
   render(ctx: any) {
-    const { contentHead } = useRuntimeConfig().public.content
-
     const slots = useSlots()
 
-    const { tag, excerpt, path, query, head } = ctx
-
-    // Allow user to overwrite the global `contentHead` config.
-    const shouldInjectContentHead = head === undefined ? contentHead : head
+    const { tag, excerpt, path, query } = ctx
 
     // Merge local `path` props and apply `findOne` query default.
     const contentQueryProps = {
@@ -99,15 +94,9 @@ const ContentDoc = defineComponent({
         // Default slot
         'default': slots?.default
           ? ({ data, refresh, isPartial }: any) => {
-              if (shouldInjectContentHead)
-                useContentHead(data)
-
               return slots.default?.({ doc: data, refresh, isPartial, excerpt, ...this.$attrs })
             }
           : ({ data }: any) => {
-              if (shouldInjectContentHead)
-                useContentHead(data)
-
               return h(
                 ContentRenderer,
                 { value: data, excerpt, tag, ...this.$attrs },

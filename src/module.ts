@@ -197,12 +197,6 @@ export interface ModuleOptions {
    */
   defaultLocale?: string
   /**
-   * Enable automatic usage of `useContentHead`
-   *
-   * @default true
-   */
-  contentHead?: boolean
-  /**
    * Enable to keep uppercase characters in the generated routes.
    *
    * @default false
@@ -329,7 +323,6 @@ export default defineNuxtModule<ModuleOptions>({
     navigation: {
       fields: [],
     },
-    contentHead: true,
     respectPathCase: false,
     experimental: {
       clientDB: false,
@@ -490,7 +483,6 @@ export default defineNuxtModule<ModuleOptions>({
     addImports([
       { name: 'queryContent', as: 'queryContent', from: resolveRuntimeModule(`./${options.experimental.advanceQuery ? '' : 'legacy/'}composables/query`) },
       { name: 'useContentHelpers', as: 'useContentHelpers', from: resolveRuntimeModule('./composables/helpers') },
-      { name: 'useContentHead', as: 'useContentHead', from: resolveRuntimeModule('./composables/head') },
       { name: 'useContentPreview', as: 'useContentPreview', from: resolveRuntimeModule('./composables/preview') },
       { name: 'withContentBase', as: 'withContentBase', from: resolveRuntimeModule('./composables/utils') },
       { name: 'useUnwrap', as: 'useUnwrap', from: resolveRuntimeModule('./composables/useUnwrap') },
@@ -702,7 +694,6 @@ export default defineNuxtModule<ModuleOptions>({
       highlight: options.highlight as any,
       wsUrl: '',
       search: options.experimental.search as any,
-      contentHead: options.contentHead ?? true,
       // Anchor link generation config
       // @deprecated
       anchorLinks: options.markdown.anchorLinks as { depth?: number, exclude?: number[] },
@@ -889,8 +880,6 @@ interface ModulePublicRuntimeConfig {
   navigation: ModuleOptions['navigation']
 
   search: ModuleOptions['experimental']['search']
-
-  contentHead: ModuleOptions['contentHead']
 }
 
 interface ModulePrivateRuntimeConfig {
