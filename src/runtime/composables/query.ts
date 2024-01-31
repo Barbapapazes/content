@@ -5,7 +5,7 @@ import type { ParsedContent } from '../types'
 import { encodeQueryParams } from '../utils/query'
 import { jsonStringify } from '../utils/json'
 import type { ContentQueryBuilder, ContentQueryBuilderParams } from '../types/query'
-import { shouldUseClientDB, withContentBase } from './utils'
+import { withContentBase } from './utils'
 import { useContentPreview } from './preview'
 import { useRuntimeConfig } from '#imports'
 
@@ -25,11 +25,6 @@ export function createQueryFetch<T = ParsedContent>() {
     // Prefetch the query
     if (!process.dev && process.server)
       addPrerenderPath(apiPath)
-
-    if (shouldUseClientDB()) {
-      const db = await import('./client-db').then(m => m.useContentDatabase())
-      return db.fetch(query as ContentQueryBuilder<ParsedContent>)
-    }
 
     const data = await $fetch(apiPath as any, {
       method: 'GET',

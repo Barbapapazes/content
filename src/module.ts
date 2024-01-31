@@ -203,16 +203,9 @@ export interface ModuleOptions {
    */
   respectPathCase: boolean
   experimental: {
-    clientDB?: boolean
     stripQueryParameters?: boolean
     advanceQuery?: boolean
 
-    /**
-     * Control content cach generation.
-     *
-     * This option might be removed in the next major version.
-     */
-    cacheContents?: boolean
     /**
      * Search mode.
      *
@@ -325,8 +318,6 @@ export default defineNuxtModule<ModuleOptions>({
     },
     respectPathCase: false,
     experimental: {
-      clientDB: false,
-      cacheContents: true,
       stripQueryParameters: false,
       advanceQuery: false,
       search: undefined,
@@ -680,7 +671,6 @@ export default defineNuxtModule<ModuleOptions>({
       experimental: {
         stripQueryParameters: options.experimental.stripQueryParameters,
         advanceQuery: options.experimental.advanceQuery === true,
-        clientDB: options.experimental.clientDB && nuxt.options.ssr === false,
       },
       respectPathCase: options.respectPathCase ?? false,
       api: {
@@ -847,7 +837,6 @@ export default defineNuxtModule<ModuleOptions>({
 interface ModulePublicRuntimeConfig {
   experimental: {
     stripQueryParameters: boolean
-    clientDB: boolean
     advanceQuery: boolean
   }
 

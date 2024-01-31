@@ -37,13 +37,3 @@ export function addPrerenderPath(path: string) {
     ].filter(Boolean).join(','),
   )
 }
-
-export function shouldUseClientDB() {
-  const { experimental } = useRuntimeConfig().public.content
-  if (process.server)
-    return false
-  if (experimental.clientDB)
-    return true
-
-  return useContentPreview().isEnabled()
-}

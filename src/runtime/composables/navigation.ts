@@ -3,7 +3,7 @@ import type { NavItem, QueryBuilder, QueryBuilderParams } from '../types'
 import { encodeQueryParams } from '../utils/query'
 import { jsonStringify } from '../utils/json'
 import type { ContentQueryBuilder } from '../types/query'
-import { shouldUseClientDB, withContentBase } from './utils'
+import { withContentBase } from './utils'
 import { queryContent } from './query'
 import { useContentPreview } from './preview'
 import { useRuntimeConfig } from '#imports'
@@ -25,11 +25,6 @@ export async function fetchContentNavigation(queryBuilder?: QueryBuilder | Query
   // Add `prefetch` to `<head>` in production
   if (!process.dev && process.server)
     addPrerenderPath(apiPath)
-
-  if (shouldUseClientDB()) {
-    const generateNavigation = await import('./client-db').then(m => m.generateNavigation)
-    return generateNavigation(params)
-  }
 
   const data = await $fetch(apiPath as any, {
     method: 'GET',
