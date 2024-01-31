@@ -22,10 +22,6 @@ export function createQueryFetch<T = ParsedContent>() {
       ? withContentBase(`/query/${process.dev ? '_' : `${hash(params)}.${content.integrity}`}/${encodeQueryParams(params)}.json`)
       : withContentBase(process.dev ? '/query' : `/query/${hash(params)}.${content.integrity}.json`)
 
-    // Prefetch the query
-    if (!process.dev && process.server)
-      addPrerenderPath(apiPath)
-
     const data = await $fetch(apiPath as any, {
       method: 'GET',
       responseType: 'json',

@@ -22,10 +22,6 @@ export async function fetchContentNavigation(queryBuilder?: QueryBuilder | Query
     ? withContentBase(`/navigation/${process.dev ? '_' : `${hash(params)}.${content.integrity}`}/${encodeQueryParams(params)}.json`)
     : withContentBase(process.dev ? `/navigation/${hash(params)}` : `/navigation/${hash(params)}.${content.integrity}.json`)
 
-  // Add `prefetch` to `<head>` in production
-  if (!process.dev && process.server)
-    addPrerenderPath(apiPath)
-
   const data = await $fetch(apiPath as any, {
     method: 'GET',
     responseType: 'json',

@@ -1,7 +1,6 @@
 import { withBase } from 'ufo'
 import type { useContent } from './content'
-import { useContentPreview } from './preview'
-import { useRequestEvent, useRuntimeConfig } from '#imports'
+import { useRuntimeConfig } from '#imports'
 
 export const withContentBase = (url: string) => withBase(url, useRuntimeConfig().public.content.api.baseURL)
 
@@ -25,15 +24,4 @@ export function navigationDisabled() {
 
   // Break app
   throw new Error('Navigation is only accessible when you enable it in module options.')
-}
-
-export function addPrerenderPath(path: string) {
-  const event = useRequestEvent()
-  event.node.res.setHeader(
-    'x-nitro-prerender',
-    [
-      event.node.res.getHeader('x-nitro-prerender'),
-      path,
-    ].filter(Boolean).join(','),
-  )
 }
